@@ -32,7 +32,7 @@ node packages/diwen-mcp/server.mjs
 MCP 客户端配置 `command=node, args=[<绝对路径>/packages/diwen-mcp/server.mjs]`；工具 `diwen_map{text,model?,enhance?}`、`diwen_describe{id}`。自测 `node packages/diwen-mcp/selftest.mjs`（42/42）。
 
 ### DeepSeek Harness（dsh）插件
-开源 Cordis 壳 + 闭源核心。`dsh plugin --profile <p> add ./packages/diwen-dsh`；注册 `diwen_map`/`diwen_describe` + skill `diwen`。自测 `node packages/diwen-dsh/selftest.mjs`。
+**自包含**：开源 Cordis 壳 + 内置闭源核心/加密数据（`vendor/diwen/`），装上即用。`dsh plugin --profile <p> add github:Pondsi/dsh-diwen#path:packages/diwen-dsh`（或本地路径）；注册 `diwen_map`/`diwen_describe` + skill `diwen`。自测 `node packages/diwen-dsh/selftest.mjs`（含隔离安装验证）。
 
 ## 可用性（实测，holdout/真实域）
 | 路径 | 概念准确率 |
@@ -45,8 +45,8 @@ MCP 客户端配置 `command=node, args=[<绝对路径>/packages/diwen-mcp/serve
 
 真实域泛化受候选库存覆盖限制（公理④：未收录义如实 verbatim）。`semanticApproval=false` 恒成立：机器规范通过 ≠ 语义正确 ≠ 人工批准。
 
-## 决策模型选项容量守卫
-决策模型 `--choice` 选项上限**按模型各异、非固定**。实测硬上限均 255（ollama 接口），有效判别上限：tev1:0.8b=32 / d3:4b=128 / clef-flash=255 / clef=128。候选义项数(+`__none__`)超硬上限或模型未探测 → **不让使用**（`checkModelCapacity`/`decisionSelect` 内置守卫）。详见 docs/PACKAGE-USAGE.md。
+## 决策模型选项容量（提示 + 错误反馈）
+决策模型 `--choice` 选项上限**按模型各异、非固定**。实测硬上限均 255（ollama 接口），有效判别上限：tev1:0.8b=32 / d3:4b=128 / clef-flash=255 / clef=128。**由使用者自行判断选用哪些模型，迪文不禁止**：`checkModelCapacity` 给建议性提示；`decisionSelect` 使用出错时 `classifyModelError` 反馈「这是模型能力问题（如选项超上限），请换模型或减少候选」。详见 docs/PACKAGE-USAGE.md。
 
 ## 仓库结构
 ```

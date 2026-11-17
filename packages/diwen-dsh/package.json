@@ -1,13 +1,14 @@
 {
   "name": "diwen-dsh",
   "version": "0.1.0",
-  "description": "迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件：开源壳 + 闭源核心（引用 packages/diwen）。注册 diwen_map/diwen_describe 工具与运行时 skill diwen。允许商用、不可再分发、须署名 Pondsi。",
+  "description": "迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件：自包含 open-core（开源壳 + 内置闭源核心 vendor/diwen + 加密概念数据）。注册 diwen_map/diwen_describe 工具与运行时 skill diwen。允许商用、不可再分发、须署名 Pondsi。",
   "type": "module",
   "main": "index.js",
   "files": [
     "index.js",
     "cordis.patch.yml",
     "skills",
+    "vendor",
     "README.md",
     "LICENSE"
   ],
@@ -15,6 +16,9 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
+  },
+  "dependencies": {
+    "@node-rs/jieba": "^2.0.4"
   },
   "peerDependencies": {
     "@deepseek-ai/dsh-tools": "*"

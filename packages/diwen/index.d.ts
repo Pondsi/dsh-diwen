@@ -746,6 +746,7 @@ export declare function clearDecisionCache(): void;
 export declare const CAPS_PATH: string;
 export declare function loadCaps(path?: string): Record<string, { hardMaxChoices: number; effectiveMaxChoices: number | null; discrimination?: Record<string, number>; allowed?: boolean; note?: string }>;
 export declare function requiredChoices(cases: Array<{ surface: string }>, candidates: { entries: Array<{ surface: string; senses?: unknown[] }> }): number;
-export declare function checkModelCapacity(model: string, required: number, caps?: Record<string, { hardMaxChoices: number; effectiveMaxChoices?: number | null }>): { ok: boolean; model: string; required: number; hardMax: number | null; effectiveMax: number | null; reason: string | null; warn?: string | null };
+export declare function checkModelCapacity(model: string, required: number, caps?: Record<string, { hardMaxChoices: number; effectiveMaxChoices?: number | null }>): { ok: boolean; model: string; required: number; known: boolean; hardMax: number | null; effectiveMax: number | null; warn: string | null; note: string };
 export declare function modelAllowed(model: string, required: number, caps?: Record<string, { hardMaxChoices: number; effectiveMaxChoices?: number | null }>): boolean;
+export declare function classifyModelError(err: unknown): { kind: 'choice-capacity' | 'model-error'; hardMax: number | null; message: string };
 export declare function ensembleSelect(cases: Array<{ id: string; surface: string; sentence: string }>, candidates: unknown, opts?: { specs?: Array<{ key: string; model: string }> }): Promise<{ predictions: Record<string, { conceptId: number | null; verbatim: boolean; sense_key: string | null; votes: Array<string | null> }>; models: string[]; semanticApproval: false }>;

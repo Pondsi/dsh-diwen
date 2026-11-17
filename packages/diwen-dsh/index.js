@@ -1,10 +1,11 @@
-// 迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— 开源壳（open-core）。
-// 核心与概念数据闭源，经相邻 open-core 包 ../diwen（packages/diwen）引用；本文件不含闭源实现。
+// 迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— 开源壳（open-core），自包含。
+// 核心与概念数据闭源，内置于本包 ./vendor/diwen（core.mjs + 加密 data.enc + env.cjs 解密壳）；
+// 装到任意 profile 的 node_modules 后不依赖相邻包或仓库 checkout。本文件不含闭源实现。
 // 许可：允许商用、不可再分发、必须署名作者 Pondsi（见 LICENSE）。
 // 插件规范（官方教程）：https://deepseek-harness.github.io/deepseek-harness/develop/basic/tool
 import { readFileSync } from 'node:fs'
 import { defineTool } from '@deepseek-ai/dsh-tools'
-import * as diwen from '../diwen/index.mjs'
+import * as diwen from './vendor/diwen/index.mjs'
 
 export const name = 'diwen'
 export const inject = ['tools']

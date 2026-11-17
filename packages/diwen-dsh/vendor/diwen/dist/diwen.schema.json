@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reasoning",
+    "words"
+  ],
+  "properties": {
+    "reasoning": {
+      "type": "string"
+    },
+    "pragmatics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "enum": [
+            "ASSERTIVE",
+            "DIRECTIVE",
+            "COMMISSIVE",
+            "EXPRESSIVE",
+            "DECLARATIVE"
+          ]
+        },
+        "force": {
+          "type": "string"
+        }
+      }
+    },
+    "patch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "word_index",
+          "field",
+          "value"
+        ],
+        "properties": {
+          "word_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "field": {
+            "enum": [
+              "s1",
+              "s2",
+              "s3a",
+              "s3b",
+              "s4",
+              "s5",
+              "s6",
+              "s7",
+              "scope",
+              "tense",
+              "time",
+              "wid",
+              "grounding_id"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          }
+        }
+      }
+    },
+    "words": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "s1",
+          "s2",
+          "s3a",
+          "s3b",
+          "s4",
+          "s5",
+          "s6",
+          "s7"
+        ],
+        "properties": {
+          "s1": {
+            "enum": [
+              "C_A",
+              "C_O",
+              "C_I",
+              "C_E",
+              "C_U",
+              "L_A",
+              "L_O",
+              "L_I",
+              "L_E",
+              "L_U",
+              "S_A",
+              "S_O",
+              "S_I",
+              "S_E",
+              "S_U",
+              "T_A",
+              "T_O",
+              "T_I",
+              "T_E",
+              "T_U",
+              "V_A",
+              "V_O",
+              "V_I",
+              "V_E",
+              "V_U",
+              "X_A",
+              "X_O",
+              "X_I",
+              "X_E",
+              "X_U",
+              "M_A",
+              "M_O",
+              "M_I",
+              "M_E",
+              "M_U",
+              "N_A",
+              "N_O",
+              "N_I",
+              "N_E",
+              "N_U",
+              "K_A",
+              "K_O",
+              "K_I",
+              "K_E",
+              "K_U"
+            ]
+          },
+          "s2": {
+            "enum": [
+              "A",
+              "E",
+              "I",
+              "O",
+              "U",
+              "Z",
+              "?"
+            ]
+          },
+          "s3a": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 59
+          },
+          "s3b": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 24
+          },
+          "s4": {
+            "enum": [
+              "OBS",
+              "INF",
+              "REP",
+              "ITU",
+              "IMG",
+              "UNM"
+            ]
+          },
+          "s5": {
+            "enum": [
+              "LG",
+              "PS",
+              "ZS",
+              "PL",
+              "PK",
+              "ZK"
+            ]
+          },
+          "s6": {
+            "enum": [
+              "PRED",
+              "ARG",
+              "MOD"
+            ]
+          },
+          "s7": {
+            "enum": [
+              "N",
+              "S",
+              "L",
+              "G",
+              "X",
+              "Z",
+              "?"
+            ]
+          },
+          "confidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "lower": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "upper": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          },
+          "grounding_id": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tense": {
+            "enum": [
+              "PAST",
+              "PRES",
+              "FUT"
+            ]
+          },
+          "time": {
+            "type": "string",
+            "minLength": 1
+          },
+          "wid": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,31}$"
+          },
+          "ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scheme",
+              "id",
+              "type"
+            ],
+            "properties": {
+              "scheme": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9._-]{0,31}$"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "enum": [
+                  "Object",
+                  "ObjectAggregate",
+                  "FiatObjectPart",
+                  "MaterialEntity",
+                  "Site",
+                  "Continuant",
+                  "Quality",
+                  "SpatialRegion",
+                  "Disposition",
+                  "Role",
+                  "Function",
+                  "GenericallyDependentContinuant",
+                  "Process",
+                  "ProcessBoundary",
+                  "TemporalRegion",
+                  "SpatiotemporalRegion",
+                  "Occurrent",
+                  "Any"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "type"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "enum": [
+              "ARG",
+              "MOD",
+              "CAUSAL",
+              "COREF",
+              "SCOPE",
+              "EVIDENCE"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

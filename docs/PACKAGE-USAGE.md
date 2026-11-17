@@ -9,11 +9,11 @@
 - **不可再分发**：不得把本项目（源码/闭源核心/加密数据）单独或随程序再分发/镜像/上传他库；你的程序只能以「依赖/引用」形式包含它，且接收者不能提取为独立项目。
 - **署名（必须）**：注明 Diwen / 迪文 + 作者 **Pondsi** + 仓库链接 https://github.com/Pondsi/Diwen 。
 - **数据加密可以吗？符合许可吗？** **可以，且符合。** 许可以「不可再分发/不可提取」约束接收者；加密是作者侧的技术保护措施，与许可目标一致。接收者**无权**解密、提取或再分发闭源核心与数据。
-  - 诚实说明：客户端加密/混淆只**提高提取成本**，并非不可破；若需真正保密，把核心+数据放服务端。
+  - 诚实说明：客户端加密/混淆只**提高提取成本**，并非不可破；若需真正保密，把核心+数据放服务端（见 docs/IMPROVEMENT-ROADMAP.md §6）。
 
 ## 1. npm 包（packages/diwen）
 
-本公开仓库已含**预构建加密制品**（`packages/diwen/dist/`），clone 后 `npm install` 即用，无需自行构建。核心明文源码与数据在作者私有仓库；制品由作者侧构建脚本产出。
+构建（作者侧）：`node scripts/build-npm.mjs` → 产出 `packages/diwen/`（index.mjs 开源壳 + env.cjs 解密 + dist/core.mjs 闭源 + dist/data.enc 加密数据）。
 
 使用（接收者）：
 ```js
@@ -41,17 +41,20 @@ MCP 客户端配置：
 ```
 工具：`diwen_map{text, model?, enhance?}`、`diwen_describe{id}`。自测：`node packages/diwen-mcp/selftest.mjs`。
 
-## 3. dsh 插件（packages/diwen-dsh，开源 Cordis 壳 + 闭源核心）
+## 3. dsh 插件（packages/diwen-dsh，自包含：开源 Cordis 壳 + 内置闭源核心/加密数据）
 
-DeepSeek Harness「一切皆插件」。壳开源（Cordis defineTool + skill），核心/数据闭源（引用 packages/diwen）。
+DeepSeek Harness「一切皆插件」。壳开源（Cordis defineTool + skill）；核心/数据闭源，**已内置于 `vendor/diwen/`**（自包含，无需相邻包），运行时分词依赖 `@node-rs/jieba` 自动安装，peer `@deepseek-ai/dsh-tools` 由宿主提供。
 ```bash
-dsh plugin --profile <p> add <本地路径或 github:Pondsi/Diwen 子路径>
+dsh plugin --profile <p> add github:Pondsi/dsh-diwen#path:packages/diwen-dsh
+# 或本地：dsh plugin --profile <p> add ./packages/diwen-dsh
 ```
-注册工具 `diwen_map`/`diwen_describe` + 运行时 skill `diwen`。自测：`node packages/diwen-dsh/selftest.mjs`。
+注册工具 `diwen_map`/`diwen_describe` + 运行时 skill `diwen`。自测：`node packages/diwen-dsh/selftest.mjs`（含隔离安装验证）。符合官方规范（name/inject/apply、defineTool、output.schema additionalProperties:true、cordis.patch.yml、dsh.bundle.patch）。
+
+> 云端选义（ensembleSelect）密钥：设环境变量 `DIWEN_KEYS_FILE` 指向你的密钥文件（或 `DIWEN_CLOUD_BASE` 覆盖 base）；离线 deterministic/off 与本地 ollama decision 路径无需密钥。
 
 ## 4. 共同约定
 
 - `semanticApproval:false` 恒成立：机器规范通过 ≠ 语义正确 ≠ 人工批准。
 - 公理④：无对应概念→verbatim 如实保留，不就近吞并、不伪造。
 - 阈值按域校准（data/wsd-thresholds.json：curated t40 / real t50）。
-- **决策模型选项容量守卫**：选项上限按模型各异（硬上限实测 255；有效判别上限 tev1=32/d3=128/clef-flash=255/clef=128）；候选义项数(+__none__)超硬上限或未探测模型→**不让使用**（`checkModelCapacity`/`decisionSelect` 内置）。能力表随加密数据分发；换模型由作者侧重探刷新。详见 README「决策模型选项容量守卫」。
+- **决策模型选项容量（提示+错误反馈，不禁止模型）**：选项上限按模型各异（硬上限实测 255；有效判别上限 tev1=32/d3=128/clef-flash=255/clef=128）。**由使用者自判选用**；`checkModelCapacity` 给建议性提示，`decisionSelect` 出错时 `classifyModelError` 反馈「模型能力问题（如选项超上限），请换模型/减少候选」。详见 docs/INTEGRATION-GUIDE.md §10。

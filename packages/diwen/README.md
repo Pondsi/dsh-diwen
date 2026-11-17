@@ -14,8 +14,8 @@ console.log(describeConcept(1223).lemma_zh);        // 折
 ```
 `env.cjs` 在加载时把 `data.enc` 解密到临时目录并设 `DIWEN_DATA_DIR`，再加载闭源核心。无需手动解密。
 
-## 选项容量守卫
-`checkModelCapacity(model, required)`：候选义项数(+`__none__`)超模型硬上限或模型未探测 → 不让使用。能力表 `data/decision-model-caps.json`（在加密数据内）。
+## 选项容量（提示 + 错误反馈，不禁止模型）
+`checkModelCapacity(model, required)` 给建议性提示（上限未知/可能超限/质量风险），**不禁止任何模型**，由使用者自判。`decisionSelect` 使用出错时 `classifyModelError` 反馈是否为模型上限问题（`choice-capacity`），使用者自行调整。能力表 `data/decision-model-caps.json`（在加密数据内）。
 
 ## 许可
 允许商用（无需授权）、不可再分发、必须署名 Pondsi + Diwen/迪文 + 仓库链接。见 LICENSE。
