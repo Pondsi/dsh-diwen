@@ -1,0 +1,21 @@
+{
+  "name": "diwen",
+  "version": "6.2.0",
+  "description": "迪文（Diwen）概念坐标系统 open-core 包：开源加载壳 + 闭源核心 + 加密概念数据。允许商用、不可再分发、须署名 Pondsi。",
+  "type": "module",
+  "main": "index.mjs",
+  "types": "index.d.ts",
+  "files": [
+    "index.mjs",
+    "env.cjs",
+    "dist",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@node-rs/jieba": "^2.0.4"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Pondsi"
+}
