@@ -10,7 +10,7 @@
 
 import * as fs from 'node:fs';
 import * as readline from 'node:readline';
-import * as diwen from '../diwen/index.mjs';
+import * as diwen from 'diwen';
 
 const PROTOCOL_VERSION = '2024-11-05';
 const SERVER_NAME = 'diwen-mcp';
