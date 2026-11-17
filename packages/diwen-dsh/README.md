@@ -20,6 +20,25 @@ peer 依赖 `@deepseek-ai/dsh-tools`、`@deepseek-ai/dsh-llm` 由 dsh 宿主提�
 | `agent/pre-step` 瀑布 | 透传决策 + `agent.inject()` 把输入的迪文坐标投影排队为模型可见上下文 |
 | `tools/post-execute` 瀑布 | 每个工具结果后 `additionalContexts` 追加迪文坐标 |
 
+### 设置开关（dsh 设置 UI 可见，每项默认开）
+通过 `Config`（schemastery）声明，可在 dsh 插件设置或 profile `config:` 中逐项开关：
+
+| 开关 | 默认 | 用途 | 举例 |
+|---|---|---|---|
+| `forceSystemPrompt` | true | 每步在系统提示词注入"机器间沟通须经迪文概念坐标"的必需指令（required，抗抑制） | 开启：模型每步看到迪文契约+公理④不伪造约束；关闭：不再注入该指令段（工具仍可用，少每步硬提醒） |
+| `forcePreStep` | true | 每步把输入中文经 `diwen_map(deterministic)` 投影为迪文坐标（surface→S3a:S3b），`agent.inject` 排队给模型 | 开启：输入「我吃饭」附「我→53:2; 吃饭→verbatim」投影；关闭：输入不附迪文坐标 |
+| `forcePostExecute` | true | 每个工具结果后把结果中文经迪文投影为坐标，追加 `additionalContexts` | 开启：工具返回含中文结果附迪文坐标保证机器间确定性；关闭：工具结果不附迪文坐标 |
+
+配置示例（profile cordis.yml 或 patch）：
+```yaml
+- id: diwen
+  name: diwen-dsh
+  config:
+    forceSystemPrompt: true
+    forcePreStep: false      # 例：只要硬指令+工具结果投影，不要输入投影
+    forcePostExecute: true
+```
+
 - 投影用 `diwen.mapChinese(text,{model:'deterministic'})`（离线、无需密钥），格式 `surface→S3a:S3b`，无概念→verbatim（公理④）。
 - 注入消息含必需 `source:{kind:'user'}`（dsh MessageBase 约定）；`semanticApproval=false` 恒成立。
 - 各 seam 防御性注册：宿主 API 差异时降级，不破坏插件加载；卸载插件即撤销（可逆）。

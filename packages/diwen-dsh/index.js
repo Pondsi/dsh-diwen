@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
+import z from '@deepseek-ai/schemastery'
 import * as diwen from 'diwen'
 
 // dsh 工具输出须为无损 JSON（JSON 往返一致）：剔除 undefined 属性、把非有限数转 null。
@@ -49,10 +50,26 @@ const FORCE_INSTRUCTION =
 export const name = 'diwen'
 export const inject = ['tools']
 
+// 强制层设置开关（dsh 设置 UI 可见；每项说明用途+举例）。默认全开。
+export const Config = z.object({
+  forceSystemPrompt: z.boolean().default(true).description(
+    '迪文硬指令开关：每步在系统提示词注入"机器间沟通须经迪文概念坐标"的必需指令（required，抗抑制）。' +
+    '例：开启时模型每步都看到迪文契约与公理④不伪造约束；关闭后不再注入该指令段（模型仍可用 diwen_map 工具，但少了每步硬提醒）。'),
+  forcePreStep: z.boolean().default(true).description(
+    '输入投影开关：每步把进入的中文输入经 diwen_map(deterministic) 投影为迪文坐标（surface→S3a:S3b），经 agent.inject 排队为模型可见上下文。' +
+    '例：开启时输入「我吃饭」会附「我→53:2; 吃饭→verbatim」坐标投影供模型对齐；关闭后输入不再附迪文坐标投影。'),
+  forcePostExecute: z.boolean().default(true).description(
+    '工具结果投影开关：每个工具执行结果后，把结果中的中文经迪文投影为坐标，追加为 additionalContexts 上下文。' +
+    '例：开启时某工具返回含中文的结果会附迪文坐标，保证机器间传递确定性；关闭后工具结果不再附迪文坐标。'),
+})
+
 const SKILL_DESCRIPTION =
   '迪文（Diwen）概念坐标系统使用指引：何时用 diwen_map/diwen_describe、公理②（模型选义）与公理④（无概念→verbatim）、semanticApproval=false 恒成立、不伪造。'
 
-export function apply(ctx) {
+export function apply(ctx, config = {}) {
+  const forceSystemPrompt = config.forceSystemPrompt ?? true
+  const forcePreStep = config.forcePreStep ?? true
+  const forcePostExecute = config.forcePostExecute ?? true
   ctx.tools.register(defineTool({
     name: 'diwen_map',
     description:
@@ -132,35 +149,41 @@ export function apply(ctx) {
     catch { return { role: 'user', content, source } }
   }
 
-  // 1) systemPrompt 必需上下文（required:true 抗抑制，每步必在提示词）。
-  try {
-    ctx.systemPrompt?.context?.({ name: 'diwen-force', order: 50, text: FORCE_INSTRUCTION, required: true, interpolate: false })
-  } catch { /* 宿主无 systemPrompt 服务时降级 */ }
+  // 1) systemPrompt 必需上下文（required:true 抗抑制，每步必在提示词）。开关 forceSystemPrompt。
+  if (forceSystemPrompt) {
+    try {
+      ctx.systemPrompt?.context?.({ name: 'diwen-force', order: 50, text: FORCE_INSTRUCTION, required: true, interpolate: false })
+    } catch { /* 宿主无 systemPrompt 服务时降级 */ }
+  }
 
   // 2) agent/pre-step 瀑布：透传决策（不修改 decision.messages，避免冻结消息处理差异），
-  //    经 agent.inject() 把输入的迪文坐标投影排队为下一步模型可见上下文（文档推荐 seam）。
-  try {
-    ctx.on?.('agent/pre-step', async (payload, next) => {
-      try {
-        const text = (payload?.messages || []).map((m) => textOf(m.content)).join('\n')
-        const proj = await projectText(text)
-        if (proj && typeof payload?.agent?.inject === 'function') payload.agent.inject(mkMsg(proj))
-      } catch { /* 投影失败不影响主流程 */ }
-      return next()
-    })
-  } catch { /* 降级 */ }
+  //    经 agent.inject() 把输入的迪文坐标投影排队为下一步模型可见上下文（文档推荐 seam）。开关 forcePreStep。
+  if (forcePreStep) {
+    try {
+      ctx.on?.('agent/pre-step', async (payload, next) => {
+        try {
+          const text = (payload?.messages || []).map((m) => textOf(m.content)).join('\n')
+          const proj = await projectText(text)
+          if (proj && typeof payload?.agent?.inject === 'function') payload.agent.inject(mkMsg(proj))
+        } catch { /* 投影失败不影响主流程 */ }
+        return next()
+      })
+    } catch { /* 降级 */ }
+  }
 
-  // 3) tools/post-execute 瀑布：每个工具结果后确定性追加迪文坐标上下文（additionalContexts）。
-  try {
-    ctx.on?.('tools/post-execute', async (exec, result, next) => {
-      let decision
-      try { decision = await next() } catch { decision = undefined }
-      if (!decision) decision = { kind: 'accept' }
-      if (decision.kind !== 'accept') return decision
-      const text = textOf(result?.content) || (typeof result?.value === 'string' ? result.value : '')
-      const proj = await projectText(text)
-      if (!proj) return decision
-      return { ...decision, additionalContexts: [...(decision.additionalContexts || []), mkMsg(proj)] }
-    })
-  } catch { /* 降级 */ }
+  // 3) tools/post-execute 瀑布：每个工具结果后确定性追加迪文坐标上下文（additionalContexts）。开关 forcePostExecute。
+  if (forcePostExecute) {
+    try {
+      ctx.on?.('tools/post-execute', async (exec, result, next) => {
+        let decision
+        try { decision = await next() } catch { decision = undefined }
+        if (!decision) decision = { kind: 'accept' }
+        if (decision.kind !== 'accept') return decision
+        const text = textOf(result?.content) || (typeof result?.value === 'string' ? result.value : '')
+        const proj = await projectText(text)
+        if (!proj) return decision
+        return { ...decision, additionalContexts: [...(decision.additionalContexts || []), mkMsg(proj)] }
+      })
+    } catch { /* 降级 */ }
+  }
 }

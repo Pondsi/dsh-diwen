@@ -125,4 +125,24 @@ assert.equal(postDecision.kind, 'accept')
 assert.ok((postDecision.additionalContexts || []).some((m) => JSON.stringify(m).includes('迪文概念坐标')), 'post-execute 追加迪文坐标上下文')
 console.log('PASS post-execute 结果投影: 追加迪文坐标 additionalContexts')
 
-console.log('ALL PASS: diwen-dsh selftest（依赖 diwen + 确定性强制层）')
+// 设置开关：Config schema 存在；全关→无 seam；部分关→对应 seam 不注册
+assert.ok(plugin.Config, '导出 Config 设置 schema')
+const mkCtx = () => {
+  const L = {}, P = []
+  return { L, P, ctx: { tools: { register: () => {} }, get: () => undefined, on: (e, f) => { L[e] = f; return () => {} }, systemPrompt: { context: (c) => { P.push(c); return () => {} } } } }
+}
+const allOff = mkCtx()
+plugin.apply(allOff.ctx, { forceSystemPrompt: false, forcePreStep: false, forcePostExecute: false })
+assert.equal(allOff.P.length, 0, '全关：systemPrompt 不注册')
+assert.equal(allOff.L['agent/pre-step'], undefined, '全关：pre-step 不注册')
+assert.equal(allOff.L['tools/post-execute'], undefined, '全关：post-execute 不注册')
+console.log('PASS 设置开关全关: 三个 seam 均不注册')
+
+const partial = mkCtx()
+plugin.apply(partial.ctx, { forcePreStep: false })
+assert.ok(partial.P.some((c) => c.name === 'diwen-force'), '部分关：systemPrompt 仍注册')
+assert.equal(partial.L['agent/pre-step'], undefined, '部分关：pre-step 不注册')
+assert.equal(typeof partial.L['tools/post-execute'], 'function', '部分关：post-execute 仍注册')
+console.log('PASS 设置开关部分关(forcePreStep:false): 仅 pre-step 不注册，其余保持')
+
+console.log('ALL PASS: diwen-dsh selftest（依赖 diwen + 确定性强制层 + 设置开关）')
