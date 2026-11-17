@@ -7,6 +7,10 @@ import { readFileSync } from 'node:fs'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import * as diwen from './vendor/diwen/index.mjs'
 
+// dsh 工具输出须为无损 JSON（JSON 往返一致）：剔除 undefined 属性、把非有限数转 null。
+const lossless = (v) => JSON.parse(JSON.stringify(v, (_k, val) =>
+  typeof val === 'number' && !Number.isFinite(val) ? null : val))
+
 export const name = 'diwen'
 export const inject = ['tools']
 
@@ -43,10 +47,11 @@ export function apply(ctx) {
       },
     },
     async execute(args) {
-      return await diwen.mapChinese(args.text, {
+      const r = await diwen.mapChinese(args.text, {
         model: args.model || 'deterministic',
         enhance: args.enhance,
       })
+      return lossless(r)   // dsh 要求无损 JSON：剔除 undefined/非有限值，保证 JSON 往返一致
     },
   }))
 
@@ -68,7 +73,7 @@ export function apply(ctx) {
       },
     },
     async execute(args) {
-      return diwen.describeConcept(args.id)
+      return lossless(diwen.describeConcept(args.id))
     },
   }))
 
