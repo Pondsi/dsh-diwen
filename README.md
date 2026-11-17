@@ -47,12 +47,12 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
+Published on npm — install directly:
 ```bash
-cd packages/diwen
-npm install        # installs the runtime segmentation dependency @node-rs/jieba
+npm install diwen
 ```
 ```js
-import { mapChinese, describeConcept } from './index.mjs';
+import { mapChinese, describeConcept } from 'diwen';
 
 // Natural language → Diwen fill contract (Axiom ②: model sense selection; Axiom ④: no concept → verbatim)
 const r = await mapChinese('我吃饭', { model: 'deterministic' }); // 'auto'|'decision'|'off'
@@ -61,7 +61,9 @@ console.log(r.contract.status, r.contract.words, r.semanticApproval); // semanti
 // Diwen → unique Chinese definition (Axiom ①)
 console.log(describeConcept(1223).lemma_zh); // 折
 ```
+Or use from this repo: `cd packages/diwen && npm install`, then `import ... from './index.mjs'`.
 - `model:'decision'` uses a local ollama decision model (d3:4b etc.) + calibrated abstention; `enhance:true` enables the enhancement layer.
+- The runtime segmentation dependency `@node-rs/jieba` is installed automatically.
 
 ### MCP server (zero-dependency stdio)
 ```bash
