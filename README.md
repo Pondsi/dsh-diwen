@@ -4,32 +4,63 @@
 
 Diwen is designed for **machine-to-machine communication** — a **machine-verifiable concept coordinate system** for agent-to-agent exchange, the deterministic content in natural-language↔machine interaction, and machine-to-machine interaction.
 
-Natural language is ambiguous and drifts; Diwen anchors meaning to discrete concept coordinates (S3a semantic field × S3b construction), so machines can **align precisely**, and each concept renders back to a unique natural-language definition. Typical uses:
-
-- **Multi-agent collaboration** — agents exchange meaning via concept coordinates, avoiding misunderstandings caused by natural-language ambiguity.
-- **Sub-agent communication** — a lead agent and its sub-agents exchange tasks and results as deterministic concepts.
-- **Deterministic knowledge-base content** — knowledge anchored to machine-verifiable concepts rather than fuzzy text.
-- **Context summaries / prompts** — compressed meaning carried as concept coordinates, stable across turns and models.
-
-Diwen is **not a translator** and does not generate natural language; it is a verifiable semantic intermediate representation above natural language.
+Natural language is ambiguous and drifts; Diwen anchors meaning to discrete concept coordinates (S3a semantic field × S3b construction), so machines can **align precisely**, and each concept renders back to a unique natural-language definition. Diwen is **not a translator** and does not generate natural language; it is a verifiable semantic intermediate representation above natural language.
 
 > 中文概要见 [说明.md](说明.md)。
 
+## The two mapping directions (asymmetric by design)
+
+- **Natural language → Diwen is NOT unique, and may be unreachable.** A word can carry several senses (polysemy), so mapping needs model word-sense disambiguation (WSD) — it is not mechanical (Axiom ②). When no concept fits, Diwen **does not guess or force a nearby concept**: it preserves the original text **verbatim** (Axiom ④, "no evidence, no concept"). *Unreachable is a first-class, honest outcome.*
+- **Diwen → natural language IS unique and deterministic.** Each concept renders to exactly one canonical Chinese definition (Axiom ①), machine-verifiable, zero drift. **Future upgrade**: a concept will render either to a unique deterministic definition **or** be marked unreachable — both outcomes are possible, but **never an uncertain / non-deterministic rendering**. Determinism is the invariant.
+
+This asymmetry is the point: machines align on discrete concepts going up, and get guaranteed-stable meaning coming down.
+
+## Use cases — and the measured benefit in each
+
+Benefits are **measured**, not advertised: token counts use real `cl100k_base` BPE (`npm run benefits` → `scripts/qa/benefits-measure.mjs`); accuracy comes from blind WSD evaluation; `semanticApproval=false` throughout. **Token savings are relative to natural-language definitions / disambiguation, not bare Chinese words** (Chinese is already token-dense).
+
+| Scenario | What Diwen adds | Measured benefit |
+|---|---|---|
+| **Multi-agent collaboration** | Agents exchange concept coordinates instead of re-describing meanings in ambiguous NL | A concept reference costs **3 tokens (coordinate) vs 13.75 (NL definition) = −78.2%**; by id **1.62 tokens = −88.2%**. Sense alignment: model WSD **0.9923** (qwen4) / **0.9933** (deepseek) concept accuracy |
+| **Sub-agent communication** | Lead ↔ sub-agents exchange tasks/results as deterministic concepts | Same compact reference; rendering **100% deterministic** (3055/3055 round-trip, **0 failures**) → no drift across turns or agents |
+| **Deterministic knowledge base** | Knowledge anchored to machine-verifiable concepts, not fuzzy text | Canonical concept index: id vs lemma **−12.8%** tokens; coordinate vs definition **−78.2%**; every entry renders identically |
+| **Context summaries / prompts** | Compressed meaning carried as concept coordinates, stable across models | Compact concept references (**−78–88%** vs definitions); stable canonical rendering across turns/models |
+| **Error correction (any NL→Diwen)** | Model WSD picks the right sense; honest abstention otherwise | Polysemous mapped words: mechanical **0.192 → ~0.99** with WSD (**≈+80pp** error correction); verbatim recall **0.9931** / precision **0.9983** → no fabrication |
+| **Real-time / local** | Local decision models, sub-second; deterministic render instant | d3:4b **0.09s**, clef-flash **0.16s**, clef **0.45s** per example; cloud cascade routes easy cases to a small model (cost saving) |
+
+**Honest caveats**: token savings are vs NL *definitions*, not raw sentences (a coordinate list is not always shorter than the original Chinese); coverage is <100% by design (Axiom ④); model accuracies are measured on frozen holdout / pressure subsets, not arbitrary real-world text.
+
 ## Status: Chinese is deliverable
 
-The Chinese part is **deliverable and usable**:
+**Current scale**: **3055 concepts** / 194 semantic fields; **42 surfaces / 211 senses** (mapped 102 / verbatim 109 / approximate 0); **1258 gold sentences / 211 senses**; frozen holdout 116; pinyin 3054/3055; **all 3055 concepts reachable** via the Chinese surface pack. Private Diwen extension supported (user concepts, id ≥ 524288).
 
-| Path | Concept accuracy (measured, holdout / real domain) |
-|---|---|
-| Cloud deepseek (enhanced) | 0.9933 (enhanced holdout reaches 1.0) |
-| Local decision d3:4b (enhanced + calibrated) | 0.9636 → curated 0.9828 |
-| Local chat qwen3:8b (enhanced) | 0.9727 |
-| Cross-family ensemble | 0.9636 |
-| Deterministic mechanical (lower bound, not the production path) | 0.5072 (full-gold recompute, round175) |
+**Concept accuracy — blind WSD evaluation (`semanticApproval=false`)**:
 
-Current scale: **3055 concepts** (194 semantic fields), **42 surfaces / 211 senses** in the candidate index, **1258 gold sentences / 211 senses**, frozen holdout 116. All 3055 concepts are reachable via the Chinese surface pack. Model accuracies above are measured on frozen holdout / historical pressure subsets; the deterministic row is the current full-gold mechanical lower bound.
+| Model | Interface | Concept accuracy | 95% CI | Speed |
+|---|---|---|---|---|
+| deepseek (cloud) | chat | **0.9933** | [0.9827, 0.9990] | — |
+| **qwen4 (cloud)** | chat | **0.9923** | [0.9856, 0.9981] | — |
+| Qwen3.6-35B-A3B (local MoE) | chat | 0.9667 | ±~5pp | ~2s |
+| clef (27B local decision) | `--ask --choice` | 0.96 | [0.9155, 0.9815] | 0.45s |
+| clef-flash (9.1B decision) | `--ask --choice` | 0.9467 | [0.8983, 0.9727] | 0.16s |
+| d3:4b (decision) | `--ask --choice` | 0.9267 | [0.8735, 0.9586] | 0.09s |
+| Deterministic mechanical (lower bound) | longest match | 0.5072 | [0.449, 0.5668] cluster | instant |
 
-Coverage expansion (13 senses + 4 new concepts: convene 3047 / severe 3048 / firm 3049 / issue_document 3050, then T2 concepts 3051–3055) is verified on three paths: cloud cascade 5/5, local decision d3:4b 8/8 (confidence 94–99%), and local chat qwen3:8b. The curated holdout re-test after expansion is 0.9828 (114/116, round163), a slight improvement over 0.9818 with no regression.
+Model rows are measured on the round136 gold polysemy pressure subset (1040 examples, blind, zero leakage); the deterministic row is the current full-gold (1258) mechanical lower bound — **not the production path**.
+
+**Production path (enhanced + calibrated; frozen holdout / real domain)**:
+
+| Path | Concept accuracy | Basis |
+|---|---|---|
+| d3:4b enhanced + calibrated curated t40 | **0.9828** (114/116) | curated holdout (verbatim recall 0.9839) |
+| cloud deepseek enhanced | 1.0 | holdout110 |
+| qwen3:8b chat enhanced | 0.9727 | holdout110 |
+| cross-family ensemble (C3 weighted vote) | 0.9636 | holdout110 |
+| d3:4b enhanced real-domain t50 | 0.8056 | real domain 36 (small sample, wide CI) |
+
+**±3pp certification (product metric)**: enhanced d3:4b on frozen holdout — concept accuracy 0.9727, **cluster bootstrap 95% CI ±3.07pp** (90 senses, ρ≈0). Deterministic baseline cluster CI ±5.89pp (211 senses) is the disclosed lower bound.
+
+**Regression**: run-all **718/0** + standalone **55/55** + MCP selftest **45/45**; Diwen→Chinese round-trip **3055/3055**, `identityFailures=0 / determinismFailures=0`.
 
 Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semanticApproval=false` always holds: passing mechanical validation ≠ semantically correct ≠ human-approved. When no concept exists, the original text is preserved verbatim (Axiom ④) — nothing is fabricated.
 
