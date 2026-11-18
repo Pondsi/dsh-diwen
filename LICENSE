@@ -17,7 +17,7 @@ Copyright (c) 2026 Pondsi（作者）
 凡使用/集成本项目，须在你的程序文档、关于页或随附说明中：
    (a) 注明使用了本项目（Diwen / 迪文）；
    (b) 写明本项目作者：**Pondsi**；
-   (c) 附本项目仓库链接 https://github.com/Pondsi/Diwen 。
+   (c) 附本项目仓库链接 https://github.com/Pondsi/dsh-diwen 。
 
 四、保留权利
 除本条款明确授予的权利外，其余一切权利（包括但不限于再分发权、修改后再分发权、闭源核心与数据的提取权）均保留给作者。
@@ -33,7 +33,7 @@ Copyright (c) 2026 Pondsi（作者）
 English summary (non-binding; Chinese text above governs):
 - Use & commercial use: FREE, no prior authorization required. You may integrate Diwen into your own programs (component/dependency/plugin/MCP service) and sell your programs.
 - No redistribution of the project itself (source, closed core, encrypted data). Your programs may be distributed only with Diwen as a dependency/reference that cannot be extracted as a standalone project. Open-core: you may not decrypt/extract/redistribute the closed core & data.
-- Attribution REQUIRED: credit "Diwen / 迪文", name the author "Pondsi", link https://github.com/Pondsi/Diwen .
+- Attribution REQUIRED: credit "Diwen / 迪文", name the author "Pondsi", link https://github.com/Pondsi/dsh-diwen .
 - All other rights reserved. Provided "AS IS", without warranty.
 
-Contact: via https://github.com/Pondsi/Diwen (issues).
+Contact: via https://github.com/Pondsi/dsh-diwen (issues).
