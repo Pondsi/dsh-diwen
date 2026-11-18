@@ -8,7 +8,7 @@
     "diwen-mcp": "server.mjs"
   },
   "dependencies": {
-    "diwen": "^6.2.0"
+    "diwen": "^6.2.1"
   },
   "files": [
     "server.mjs",
