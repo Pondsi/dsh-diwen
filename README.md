@@ -72,7 +72,7 @@ node packages/diwen-mcp/server.mjs
 Configure your MCP client with `command=node, args=[<absolute path>/packages/diwen-mcp/server.mjs]`; tools `diwen_map{text,model?,enhance?}`, `diwen_describe{id}`. Self-test: `node packages/diwen-mcp/selftest.mjs` (42/42).
 
 ### DeepSeek Harness (dsh) plugin
-**Self-contained**: open Cordis shell + bundled closed core/encrypted data (`vendor/diwen/`), works on install. `dsh plugin --profile <p> add github:Pondsi/dsh-diwen#path:packages/diwen-dsh` (or a local path); registers `diwen_map`/`diwen_describe` + skill `diwen`. Self-test: `node packages/diwen-dsh/selftest.mjs` (includes isolated-install verification).
+**Open Cordis shell + depends on npm `diwen` core + deterministic force layer**: registers `diwen_map`/`diwen_describe` + skill `diwen`. `dsh plugin --profile <p> add diwen-dsh` (or a local path). Force-layer seams (systemPrompt required instruction / pre-step input projection / post-execute result projection) each have a settings toggle (`forceSystemPrompt`/`forcePreStep`/`forcePostExecute`, default on, with descriptions). Self-test: `node packages/diwen-dsh/selftest.mjs`. See docs/DSH-FORCE-USAGE.md.
 
 ## Manuals
 - [docs/USAGE-MANUAL.md](docs/USAGE-MANUAL.md): non-technical usage manual (install, call, license, attribution).
@@ -86,7 +86,7 @@ A decision model's `--choice` option limit **varies per model and is not fixed**
 ```
 packages/diwen/       npm package: index.mjs/env.cjs open shell + dist/core.mjs closed core + dist/data.enc encrypted data
 packages/diwen-mcp/   MCP server (open shell, reuses closed core)
-packages/diwen-dsh/   dsh plugin (self-contained: open Cordis shell + vendor closed core + skill)
+packages/diwen-dsh/   dsh plugin (open Cordis shell + npm diwen core + force layer with settings toggles)
 docs/USAGE-MANUAL.md  non-technical usage manual
 docs/PACKAGE-USAGE.md integration guide
 说明.md               Chinese overview

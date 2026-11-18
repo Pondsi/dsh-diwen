@@ -41,16 +41,21 @@ MCP 客户端配置：
 ```
 工具：`diwen_map{text, model?, enhance?}`、`diwen_describe{id}`。自测：`node packages/diwen-mcp/selftest.mjs`。
 
-## 3. dsh 插件（packages/diwen-dsh，自包含：开源 Cordis 壳 + 内置闭源核心/加密数据）
+## 3. dsh 插件（packages/diwen-dsh，开源 Cordis 壳 + 依赖 npm diwen 核心 + 确定性强制层）
 
-DeepSeek Harness「一切皆插件」。壳开源（Cordis defineTool + skill）；核心/数据闭源，**已内置于 `vendor/diwen/`**（自包含，无需相邻包），运行时分词依赖 `@node-rs/jieba` 自动安装，peer `@deepseek-ai/dsh-tools` 由宿主提供。
+DeepSeek Harness「一切皆插件」。壳开源（Cordis defineTool + skill + 强制层）；核心/数据闭源，**依赖已发布的 npm `diwen` 包**（核心可 `pnpm update diwen` 独立更新），运行时分词依赖 `@node-rs/jieba` 自动安装，peer `@deepseek-ai/dsh-tools`/`@deepseek-ai/dsh-llm` 由宿主提供。
 ```bash
-dsh plugin --profile <p> add github:Pondsi/dsh-diwen#path:packages/diwen-dsh
+dsh plugin --profile <p> add diwen-dsh        # 从 npm（自动拉取 diwen 核心）
 # 或本地：dsh plugin --profile <p> add ./packages/diwen-dsh
 ```
-注册工具 `diwen_map`/`diwen_describe` + 运行时 skill `diwen`。自测：`node packages/diwen-dsh/selftest.mjs`（含隔离安装验证）。符合官方规范（name/inject/apply、defineTool、output.schema additionalProperties:true、cordis.patch.yml、dsh.bundle.patch）。
+注册工具 `diwen_map`/`diwen_describe` + 运行时 skill `diwen`。自测：`node packages/diwen-dsh/selftest.mjs`。符合官方规范（name/inject/apply、defineTool、output.schema additionalProperties:true、cordis.patch.yml、dsh.bundle.patch）。
 
-> 云端选义（ensembleSelect）密钥：设环境变量 `DIWEN_KEYS_FILE` 指向你的密钥文件（或 `DIWEN_CLOUD_BASE` 覆盖 base）；离线 deterministic/off 与本地 ollama decision 路径无需密钥。
+**确定性强制层**（不替换 agent-loop，使迪文在关键环节强制使用而非仅模型自判）：
+- `systemPrompt.context(required)` 每步迪文硬指令；`agent/pre-step` 输入经 diwen_map 投影坐标 inject；`tools/post-execute` 工具结果追加迪文坐标。
+- **设置开关**（dsh 设置 UI 可见，默认全开，各带用途+举例）：`forceSystemPrompt` / `forcePreStep` / `forcePostExecute`。profile 配置示例：`- id: diwen / name: diwen-dsh / config: {forcePreStep: false}`。
+- 详见 docs/DSH-FORCE-USAGE.md。
+
+> 云端选义（ensembleSelect 加权投票 / cascadeSelect 云内级联）密钥：设环境变量 `DIWEN_KEYS_FILE` 指向你的密钥文件（或 `DIWEN_CLOUD_BASE` 覆盖 base）；离线 deterministic/off 与本地 ollama decision 路径无需密钥。
 
 ## 4. 共同约定
 
