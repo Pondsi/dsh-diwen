@@ -1,10 +1,10 @@
 # diwen-dsh
 
-迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— **开源壳 + 确定性强制层**，依赖已发布的 [`diwen`](https://www.npmjs.com/package/diwen) 核心包（闭源核心 + 加密概念数据）。当前版本 **0.3.0**；核心依赖 npm `diwen`（`^6.2.0`，可解析已发布的 6.3.3）。
+迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— **开源壳 + 确定性强制层**，依赖已发布的 [`diwen`](https://www.npmjs.com/package/diwen) 核心包（闭源核心 + 加密概念数据）。当前版本 **0.3.1**；核心依赖 npm `diwen`（`^6.4.0`，可解析已发布的 6.4.0）。
 
 注册 `diwen_map`/`diwen_describe` 工具 + 运行时 skill `diwen`，并以原生 Cordis seam 组成**迪文确定性闭环**，使迪文概念坐标在 dsh 关键环节强制使用（而非仅模型自判）。
 
-> 能力边界：dsh 侧当前 **2 工具**（无 `diwen_select`）；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp@6.3.0）或直接调用核心 `cascadeSelect`/`ensembleSelect`。
+> 能力边界：dsh 侧当前 **2 工具**（无 `diwen_select`）；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp@6.3.1）或直接调用核心 `cascadeSelect`/`ensembleSelect`。
 
 许可：**允许商用、不可再分发、必须署名作者 Pondsi**（见 [LICENSE](./LICENSE)）。
 

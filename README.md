@@ -51,7 +51,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
-Published on npm (current **diwen@6.3.3**) — install directly:
+Published on npm (current **diwen@6.4.0**) — install directly:
 ```bash
 npm install diwen
 ```
@@ -69,6 +69,16 @@ Or use from this repo: `cd packages/diwen && npm install`, then `import ... from
 - `model:'decision'` uses a local ollama decision model (d3:4b etc.) + calibrated abstention; `enhance:true` enables the enhancement layer.
 - The runtime segmentation dependency `@node-rs/jieba` is installed automatically.
 
+### Private Diwen (add your own concepts)
+You can **add your own private concepts** without touching the public core; they merge into the lexicon and work across mapping / WSD / describe / render. Private concept IDs must be ≥ **524288** (the custom address partition); glyph coordinates `(s3a,s3b)` must avoid base concepts (collision-checked at load).
+```bash
+diwen private template -o my-private.json    # scaffold (example concept + a free coordinate)
+diwen private free-coords 20                 # list free (s3a,s3b) coordinates
+diwen private validate my-private.json       # validate id partition / collisions / schema
+export DIWEN_PRIVATE_LEXICON=my-private.json  # load; then map/concept include your concepts
+```
+Set `DIWEN_PRIVATE_CANDIDATES` for private WSD senses. Your private file is your own data (plain JSON, not uploaded/redistributed; no core decryption needed). Programmatic API: `loadLexicon(path,{privatePath,noCache})`, `validatePrivateRoots`, `freeCoordinates`, `privateTemplate`, `mergeLexicon`. See [docs/PACKAGE-USAGE.md](docs/PACKAGE-USAGE.md) §5.
+
 ### MCP server (zero third-party protocol dependency; core via npm `diwen`)
 ```bash
 npm install diwen-mcp
@@ -77,7 +87,7 @@ npx diwen-mcp        # or repo-local: node packages/diwen-mcp/server.mjs
 Configure your MCP client with `command=node, args=[<absolute path>/diwen-mcp/server.mjs]`; **3 tools**: `diwen_map{text,model?,enhance?}`, `diwen_describe{id}`, `diwen_select{cases,mode?,weights?}` (cloud cascade/ensemble sense selection; requires `DIWEN_KEYS_FILE`). Self-test: `node packages/diwen-mcp/selftest.mjs` (**45/45**).
 
 ### DeepSeek Harness (dsh) plugin
-**Open Cordis shell + depends on npm `diwen` core + deterministic force layer** (diwen-dsh@0.3.0): registers `diwen_map`/`diwen_describe` + skill `diwen`. `dsh plugin --profile <p> add diwen-dsh` (or a local path). Force-layer seams (systemPrompt required instruction / pre-step input projection / post-execute result projection) each have a settings toggle (`forceSystemPrompt`/`forcePreStep`/`forcePostExecute`, default on, with descriptions). Self-test: `node packages/diwen-dsh/selftest.mjs`. See docs/DSH-FORCE-USAGE.md.
+**Open Cordis shell + depends on npm `diwen` core + deterministic force layer** (diwen-dsh@0.3.1): registers `diwen_map`/`diwen_describe` + skill `diwen`. `dsh plugin --profile <p> add diwen-dsh` (or a local path). Force-layer seams (systemPrompt required instruction / pre-step input projection / post-execute result projection) each have a settings toggle (`forceSystemPrompt`/`forcePreStep`/`forcePostExecute`, default on, with descriptions). Self-test: `node packages/diwen-dsh/selftest.mjs`. See docs/DSH-FORCE-USAGE.md.
 
 ## Manuals
 - [docs/USAGE-MANUAL.md](docs/USAGE-MANUAL.md): non-technical usage manual (install, call, license, attribution).

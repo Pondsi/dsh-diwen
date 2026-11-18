@@ -27,8 +27,8 @@
 ## 2. 前置条件与安装
 
 - Node.js **>= 18**（自测在 v24 上通过）。
-- **依赖已发布的 npm `diwen`（`^6.3.0`）**：闭源核心 + 加密数据 + 分词器 `@node-rs/jieba` 均由该包提供。`npm install diwen-mcp` 会自动拉取 `diwen`，**无需相邻 `packages/diwen` 目录、无需自行构建核心**。
-- 本包 `dependencies = { "diwen": "^6.3.0" }`；`diwen` 6.3.0 起含 `cascadeSelect`/`ensembleSelect`（`diwen_select` 所需）。
+- **依赖已发布的 npm `diwen`（`^6.4.0`）**：闭源核心 + 加密数据 + 分词器 `@node-rs/jieba` 均由该包提供。`npm install diwen-mcp` 会自动拉取 `diwen`，**无需相邻 `packages/diwen` 目录、无需自行构建核心**。
+- 本包 `dependencies = { "diwen": "^6.4.0" }`；`diwen` 6.3.0 起含 `cascadeSelect`/`ensembleSelect`（`diwen_select` 所需）。
 
 ```bash
 npm install diwen-mcp
@@ -45,7 +45,7 @@ npx diwen-mcp                              # 等价于 node node_modules/diwen-m
 stdio 纪律（MCP stdio transport）：
 
 - **stdout 只写 JSON-RPC 响应**，每行一条 JSON（newline-delimited）。壳内已把 `console.log/info/debug/dir` 改道 stderr，防止污染协议流。
-- **日志全部走 stderr**（`console.error`），例如启动行 `[diwen-mcp] diwen-mcp v6.3.0 ready (stdio, MCP 2024-11-05); tools: diwen_map, diwen_describe, diwen_select`。
+- **日志全部走 stderr**（`console.error`），例如启动行 `[diwen-mcp] diwen-mcp v6.3.1 ready (stdio, MCP 2024-11-05); tools: diwen_map, diwen_describe, diwen_select`。
 - 协议版本：`2024-11-05`。支持 `initialize`、`ping`、`tools/list`、`tools/call`；通知（`notifications/initialized`、`notifications/cancelled` 等无 `id` 的消息）一律忽略、不回响应。
 - 关闭 stdin 即干净退出（exit 0）；亦响应 `SIGINT`/`SIGTERM`。
 
@@ -200,7 +200,7 @@ spawn `server.mjs` 并走完整流程：`initialize` → `notifications/initiali
 
 - **仅 stdio**：无 HTTP/SSE/WebSocket 传输，无鉴权、无多客户端会话隔离；请按本地单客户端进程使用。
 - **请求串行处理**：为保证响应顺序与 stdout 不交错，请求排队执行；一旦 `decision`/`auto`/`diwen_select` 真正触发模型调用，该慢调用会阻塞后续请求。
-- **依赖 npm `diwen`**：`diwen` 未安装或版本不匹配（低于 6.3.0 缺 `cascadeSelect`/`ensembleSelect`）时进程启动即失败（错误在 stderr）；本包不能脱离 `diwen` 独立运行。
+- **依赖 npm `diwen`**：`diwen` 未安装或版本不匹配（低于依赖下限 `^6.4.0`）时进程启动即失败（错误在 stderr）；本包不能脱离 `diwen` 独立运行。
 - **首次调用有解密开销**：`env.cjs` 需解密概念数据到临时目录（实测 import 约 0.3s 量级，随机器/数据量变化）。
 - **覆盖限制**：`status:"partial"` / `uncovered` 常见，属数据覆盖问题（`我吃饭` 实测仅 `我` 有概念，覆盖率 1/3）；`decision` 的真实模型调用需本地 ollama，`diwen_select` 需云端密钥，这两条路径未在零网络自测内验证。
 - 不支持 JSON-RPC batch（`2024-11-05` 无此能力）。

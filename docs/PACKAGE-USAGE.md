@@ -7,9 +7,9 @@
 
 | 包 | 版本 | 说明 |
 |---|---|---|
-| diwen | **6.3.3** | 核心：开源加载壳 + 闭源核心 + 加密概念数据 |
-| diwen-mcp | **6.3.0** | MCP server（3 工具），依赖 npm diwen ^6.3.0 |
-| diwen-dsh | **0.3.0** | dsh 插件（强制层 + 设置开关），依赖 npm diwen 核心 |
+| diwen | **6.4.0** | 核心：开源加载壳 + 闭源核心 + 加密概念数据 + 私有迪文扩展 |
+| diwen-mcp | **6.3.1** | MCP server（3 工具），依赖 npm diwen ^6.4.0 |
+| diwen-dsh | **0.3.1** | dsh 插件（强制层 + 设置开关），依赖 npm diwen ^6.4.0 |
 
 > 版本以各 `packages/*/package.json` 为准；其余文档只引用本表，不另行复制版本号。
 
@@ -82,4 +82,49 @@ dsh plugin --profile <p> add diwen-dsh        # 从 npm（自动拉取 diwen 核
 - `semanticApproval:false` 恒成立：机器规范通过 ≠ 语义正确 ≠ 人工批准。
 - 公理④：无对应概念→verbatim 如实保留，不就近吞并、不伪造。
 - 阈值按域校准（data/wsd-thresholds.json：curated t40 / real t50）。
-- **决策模型选项容量（提示+错误反馈，不禁止模型）**：选项上限按模型各异（硬上限实测 255；有效判别上限 tev1=32/d3=128/clef-flash=255/clef=128；当前候选库存单面最大 10 义 +__none__=11，远小于上限）。**由使用者自判选用**；`checkModelCapacity` 给建议性提示，`decisionSelect` 出错时 `classifyModelError` 反馈「模型能力问题（如选项超上限），请换模型/减少候选」。
+- **决策模型选项容量（提示+错误反馈，不禁止模型）**：选项上限按模型各异（硬上限实测 255；有效判别上限 tev1=32/d3=128/clef-flash=255/clef=128；当前候选库存单面最大 12 义（老）+__none__=13，远小于上限）。**由使用者自判选用**；`checkModelCapacity` 给建议性提示，`decisionSelect` 出错时 `classifyModelError` 反馈「模型能力问题（如选项超上限），请换模型/减少候选」。
+
+## 5. 私有迪文（用户自定义概念扩展）
+
+迪文允许使用者**自行增加私有概念**（私有迪文），无需改动公开核心，即可让迪文承载你自己的领域术语/专有概念。私有概念与基础概念（3055 条）在同一词库合并，**全链路可用**（map 匹配 / 模型 WSD 选义 / describe 释义 / render 渲染）。
+
+**分区与隔离**
+- 概念 ID 分区：基础概念 id ∈ [1, 524287]；**私有概念 id 须 ≥ 524288**（`PRIVATE_ID_MIN`，上半区约 52 万槽位）。加载期校验 id 分区，杜绝与基础概念冲突。
+- 字形坐标 (s3a,s3b) 须避开基础概念已占用的组合（加载期碰撞检测）；用 `diwen private free-coords` 查空闲坐标。
+- 私有数据是**使用者自己的文件**（明文 JSON，不入库、不加密、不再分发）；不需要也不允许解密公开核心。符合许可（你扩展自己的私有数据，非再分发迪文本身）。
+
+**增加私有概念（CLI，四步）**
+```bash
+diwen private template -o my-private.json    # 1. 生成模板（含示例概念 + 空闲坐标）
+# 2. 编辑 my-private.json：id≥524288、lemma_zh（自然中文词形）、field、bfo_type、place、nsm、pinyin
+diwen private free-coords 20                 # 查空闲 (s3a,s3b) 供挑选
+diwen private validate my-private.json       # 3. 校验（id 分区/坐标碰撞/schema）
+export DIWEN_PRIVATE_LEXICON=my-private.json  # 4. 设环境变量，加载私有概念
+diwen private list                           # 查看已加载私有概念
+```
+
+**使用（设 DIWEN_PRIVATE_LEXICON 后自动生效）**
+```bash
+diwen map "……你的私有词……" --model deterministic   # 私有词形被匹配
+diwen concept 524288                                  # 私有概念 → 中文释义
+```
+```js
+import { mapChinese, describeConcept, loadLexicon } from 'diwen';
+const lex = loadLexicon();                 // 自动合并 DIWEN_PRIVATE_LEXICON 指向的私有概念
+const r = await mapChinese('含私有词的句子', { model: 'auto' });
+console.log(describeConcept(524288).lemma_zh);
+```
+
+**私有候选义项（模型 WSD 选义，可选）**
+私有概念若需多义消歧，设 `DIWEN_PRIVATE_CANDIDATES` 指向私有候选 JSON（结构同 zh-sense-candidates.json：`{entries:[{surface,senses:[{sense_key,concept,definitionZh,example,verbatim}]}]}`）。`loadCandidates()` 按 surface 合并私有义项（标 private:true），模型即可在私有义项上选义。
+
+**程序化 API（代码级控制）**
+- `loadLexicon(path?, { privatePath, noCache })`：显式指定私有文件（覆盖环境变量）。
+- `validatePrivateRoots(roots, baseRoots)` / `loadPrivateRoots(path, baseRoots)`：校验/加载。
+- `freeCoordinates(baseRoots, count)` / `privateTemplate(baseRoots)`：空闲坐标/模板。
+- `mergeLexicon(baseLex, pack)` / `validateNamespacePack(pack, baseLex)`：扩展包合并（命名空间机制）。
+
+**注意**
+- 私有文件修改后需**重启进程**（词库进程级缓存）；或 `loadLexicon(undefined,{noCache:true})` 强制重读。
+- `lemma_zh` 宜为自然中文词形（与基础概念一致），分词边界过滤对私有/基础词同等生效。
+- 私有概念 `semanticApproval` 同样恒 false；无对应概念仍走 verbatim（公理④）。

@@ -4,7 +4,7 @@
 
 ## 一、获取与安装
 
-本仓库为 open-core 公开分发（开源壳 + 闭源核心 + 加密数据），clone 后离线即用。当前发布：**diwen@6.3.0 / diwen-mcp@6.3.0 / diwen-dsh@0.3.0**。
+本仓库为 open-core 公开分发（开源壳 + 闭源核心 + 加密数据），clone 后离线即用。当前发布：**diwen@6.4.0 / diwen-mcp@6.3.1 / diwen-dsh@0.3.1**。
 
 - **npm 包**（已发布）：`npm install diwen`（自动安装中文分词依赖），然后 `import { mapChinese, describeConcept } from 'diwen'`；或从本仓库进入 `packages/diwen` 运行 `npm install` 后使用。
 - **MCP server**（已发布）：`npm install diwen-mcp`，然后 `npx diwen-mcp`（或 `node packages/diwen-mcp/server.mjs`），在你的 MCP 客户端里配置该命令即可。**3 工具**：`diwen_map` / `diwen_describe` / `diwen_select`（云端级联/集成选义，需环境变量 `DIWEN_KEYS_FILE` 密钥）。
@@ -39,3 +39,11 @@
 - 当前仅中文可交付；其他语言在后续路线中。
 - 覆盖率非 100%；无概念词如实保留，不伪造。
 - 集成 technical 细节见 [PACKAGE-USAGE.md](PACKAGE-USAGE.md)。
+
+## 六、增加你自己的私有迪文（私有概念）
+
+你可以**自行增加私有概念**，把自己的领域术语纳入迪文，无需改动公开核心；私有概念与基础概念一起被匹配、选义、查释义、渲染。
+
+四步：① `diwen private template -o my-private.json` 生成模板；② 填写你的概念（`id` 须 ≥ **524288** 私有号段、`lemma_zh` 你的中文词、`s3a/s3b` 用 `diwen private free-coords` 查空闲坐标、field/bfo_type/place/nsm/pinyin）；③ `diwen private validate my-private.json` 校验；④ 设环境变量 `DIWEN_PRIVATE_LEXICON=my-private.json` 启用，`diwen private list` 查看。
+
+私有文件是你自己的数据（不上传、不再分发、无需解密核心）；修改后重启生效。多义消歧另设 `DIWEN_PRIVATE_CANDIDATES`。完整说明见 [PACKAGE-USAGE.md](PACKAGE-USAGE.md) §5。
