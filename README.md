@@ -82,7 +82,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
-Published on npm (current **diwen@6.7.0**) — install directly:
+Published on npm (current **diwen@6.7.1**) — install directly:
 ```bash
 npm install diwen
 ```
