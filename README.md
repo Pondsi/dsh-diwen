@@ -22,10 +22,12 @@ The Chinese part is **deliverable and usable**:
 | Path | Concept accuracy (measured, holdout / real domain) |
 |---|---|
 | Cloud deepseek (enhanced) | 0.9933 (enhanced holdout reaches 1.0) |
-| Local decision d3:4b (enhanced + calibrated) | 0.9636 → curated 0.9818 |
+| Local decision d3:4b (enhanced + calibrated) | 0.9636 → curated 0.9828 |
 | Local chat qwen3:8b (enhanced) | 0.9727 |
 | Cross-family ensemble | 0.9636 |
 | Deterministic mechanical (lower bound, not the production path) | 0.5173 |
+
+Coverage expansion (13 senses + 4 new concepts: convene 3047 / severe 3048 / firm 3049 / issue_document 3050) is verified on three paths: cloud cascade 5/5, local decision d3:4b 8/8 (confidence 94–99%), and local chat qwen3:8b. The curated holdout re-test after expansion is 0.9828 (114/116, round163), a slight improvement over 0.9818 with no regression.
 
 Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semanticApproval=false` always holds: passing mechanical validation ≠ semantically correct ≠ human-approved. When no concept exists, the original text is preserved verbatim (Axiom ④) — nothing is fabricated.
 
@@ -33,7 +35,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 
 1. Continuously improve Chinese usability (coverage expansion, real-domain generalization).
 2. Complete development of 27 languages, then support more.
-3. Merge concepts and eliminate natural-language partitions; share concept coordinates across languages.
+3. Post-hoc, sense-level concept sharing only where coordinates are provably identical (default: do NOT merge; most pairs stay independent and are linked, not merged). Eliminate natural-language partitions as a machine-interoperation overlay — not by deleting language diversity.
 4. Machine-expand concepts and semantics for more natural languages.
 5. Continuously refine humanity's existing concepts and semantics.
 6. Machine-expand concepts that do not yet exist in natural language.
@@ -47,7 +49,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
-Published on npm — install directly:
+Published on npm (current **diwen@6.3.0**) — install directly:
 ```bash
 npm install diwen
 ```
@@ -65,14 +67,15 @@ Or use from this repo: `cd packages/diwen && npm install`, then `import ... from
 - `model:'decision'` uses a local ollama decision model (d3:4b etc.) + calibrated abstention; `enhance:true` enables the enhancement layer.
 - The runtime segmentation dependency `@node-rs/jieba` is installed automatically.
 
-### MCP server (zero-dependency stdio)
+### MCP server (zero third-party protocol dependency; core via npm `diwen`)
 ```bash
-node packages/diwen-mcp/server.mjs
+npm install diwen-mcp
+npx diwen-mcp        # or repo-local: node packages/diwen-mcp/server.mjs
 ```
-Configure your MCP client with `command=node, args=[<absolute path>/packages/diwen-mcp/server.mjs]`; tools `diwen_map{text,model?,enhance?}`, `diwen_describe{id}`. Self-test: `node packages/diwen-mcp/selftest.mjs` (42/42).
+Configure your MCP client with `command=node, args=[<absolute path>/diwen-mcp/server.mjs]`; **3 tools**: `diwen_map{text,model?,enhance?}`, `diwen_describe{id}`, `diwen_select{cases,mode?,weights?}` (cloud cascade/ensemble sense selection; requires `DIWEN_KEYS_FILE`). Self-test: `node packages/diwen-mcp/selftest.mjs` (**45/45**).
 
 ### DeepSeek Harness (dsh) plugin
-**Open Cordis shell + depends on npm `diwen` core + deterministic force layer**: registers `diwen_map`/`diwen_describe` + skill `diwen`. `dsh plugin --profile <p> add diwen-dsh` (or a local path). Force-layer seams (systemPrompt required instruction / pre-step input projection / post-execute result projection) each have a settings toggle (`forceSystemPrompt`/`forcePreStep`/`forcePostExecute`, default on, with descriptions). Self-test: `node packages/diwen-dsh/selftest.mjs`. See docs/DSH-FORCE-USAGE.md.
+**Open Cordis shell + depends on npm `diwen` core + deterministic force layer** (diwen-dsh@0.3.0): registers `diwen_map`/`diwen_describe` + skill `diwen`. `dsh plugin --profile <p> add diwen-dsh` (or a local path). Force-layer seams (systemPrompt required instruction / pre-step input projection / post-execute result projection) each have a settings toggle (`forceSystemPrompt`/`forcePreStep`/`forcePostExecute`, default on, with descriptions). Self-test: `node packages/diwen-dsh/selftest.mjs`. See docs/DSH-FORCE-USAGE.md.
 
 ## Manuals
 - [docs/USAGE-MANUAL.md](docs/USAGE-MANUAL.md): non-technical usage manual (install, call, license, attribution).
@@ -89,6 +92,7 @@ packages/diwen-mcp/   MCP server (open shell, reuses closed core)
 packages/diwen-dsh/   dsh plugin (open Cordis shell + npm diwen core + force layer with settings toggles)
 docs/USAGE-MANUAL.md  non-technical usage manual
 docs/PACKAGE-USAGE.md integration guide
+docs/DSH-FORCE-USAGE.md  dsh force layer + settings toggles
 说明.md               Chinese overview
 SPONSORS.md           sponsor page
 sponsors/             donation QR images

@@ -1,8 +1,10 @@
 # diwen-dsh
 
-迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— **开源壳 + 确定性强制层**，依赖已发布的 [`diwen`](https://www.npmjs.com/package/diwen) 核心包（闭源核心 + 加密概念数据）。
+迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件 —— **开源壳 + 确定性强制层**，依赖已发布的 [`diwen`](https://www.npmjs.com/package/diwen) 核心包（闭源核心 + 加密概念数据）。当前版本 **0.3.0**；核心依赖 npm `diwen`（`^6.2.0`，可解析已发布的 6.3.0）。
 
 注册 `diwen_map`/`diwen_describe` 工具 + 运行时 skill `diwen`，并以原生 Cordis seam 组成**迪文确定性闭环**，使迪文概念坐标在 dsh 关键环节强制使用（而非仅模型自判）。
+
+> 能力边界：dsh 侧当前 **2 工具**（无 `diwen_select`）；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp@6.3.0）或直接调用核心 `cascadeSelect`/`ensembleSelect`。
 
 许可：**允许商用、不可再分发、必须署名作者 Pondsi**（见 [LICENSE](./LICENSE)）。
 
@@ -64,4 +66,4 @@ node selftest.mjs  # 工具/skill/强制层 seam + 投影 + source.kind 校验
 已在 F:\DeepSeek Harness（源码构建）headless profile + deepseek-v4-pro 验证：模型自主加载 skill → diwen_map('我吃饭')→我=1363/吃饭 verbatim → diwen_describe(1363)=我/coord 53:2；强制层 seam 注册并注入迪文坐标，无错误。
 
 ## 更新
-`dsh plugin --profile <p> update diwen-dsh`（npm registry 路径）。详见仓库 docs/DSH-FORCE-USAGE.md。
+`dsh plugin --profile <p> update diwen-dsh`（npm registry 路径）。强制层与设置开关详见 [docs/DSH-FORCE-USAGE.md](https://github.com/Pondsi/dsh-diwen/blob/main/docs/DSH-FORCE-USAGE.md)（npm tarball 不含 docs/，故用公开仓绝对链接）。
