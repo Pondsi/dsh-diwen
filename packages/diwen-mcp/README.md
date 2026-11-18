@@ -45,7 +45,7 @@ npx diwen-mcp                              # 等价于 node node_modules/diwen-m
 stdio 纪律（MCP stdio transport）：
 
 - **stdout 只写 JSON-RPC 响应**，每行一条 JSON（newline-delimited）。壳内已把 `console.log/info/debug/dir` 改道 stderr，防止污染协议流。
-- **日志全部走 stderr**（`console.error`），例如启动行 `[diwen-mcp] diwen-mcp v6.3.1 ready (stdio, MCP 2024-11-05); tools: diwen_map, diwen_describe, diwen_select`。
+- **日志全部走 stderr**（`console.error`），例如启动行 `[diwen-mcp] diwen-mcp v6.3.2 ready (stdio, MCP 2024-11-05); tools: diwen_map, diwen_describe, diwen_select`。
 - 协议版本：`2024-11-05`。支持 `initialize`、`ping`、`tools/list`、`tools/call`；通知（`notifications/initialized`、`notifications/cancelled` 等无 `id` 的消息）一律忽略、不回响应。
 - 关闭 stdin 即干净退出（exit 0）；亦响应 `SIGINT`/`SIGTERM`。
 

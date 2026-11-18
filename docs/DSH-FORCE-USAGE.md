@@ -46,7 +46,7 @@ dsh 是 Cordis"一切皆插件"，无特权内核；瀑布事件（waterfall，�
 - 端到端：deepseek-v4-pro **自主**加载 diwen skill → diwen_map('我吃饭')→我=1363/吃饭 verbatim（公理④）→ diwen_describe(1363)=我/coord 53:2/field corePron1，正确报 semanticApproval=false、不伪造。
 - **修复真 bug**：dsh 工具输出须"无损 JSON"，mapChinese 返回含 undefined 字段 → `value is not lossless JSON`。已在插件 execute 加 `lossless()`（JSON 往返净化，剔 undefined/非有限值）修复，真机复测通过。
 
-## 5. 已实现（diwen-dsh@0.3.1，真机验证通过）
+## 5. 已实现（diwen-dsh@0.3.2，真机验证通过）
 强制层并入 **diwen-dsh**（不再有单独 diwen-dsh-force 壳），依赖已发布 npm `diwen` 核心（去 vendor）：
 - `ctx.systemPrompt.context({name:'diwen-force',required:true,interpolate:false})`：每步硬指令。
 - `agent/pre-step` 瀑布：**透传 next()**（不修改 decision.messages，避免冻结消息处理差异）+ `payload.agent.inject(mkMsg(proj))` 排队迪文坐标投影。
@@ -61,7 +61,7 @@ dsh 是 Cordis"一切皆插件"，无特权内核；瀑布事件（waterfall，�
 
 > 能力边界：dsh 侧当前注册 **2** 工具（diwen_map/diwen_describe）+ skill；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp，3 工具）或直接调用核心 `cascadeSelect`/`ensembleSelect`，不在 dsh 工具集内。
 
-### 设置开关（diwen-dsh@0.3.1，dsh 设置 UI 可见）
+### 设置开关（diwen-dsh@0.3.2，dsh 设置 UI 可见）
 `export const Config = z.object({...})`（@deepseek-ai/schemastery），`apply(ctx, config={})` 读开关，每项 `.description()` 说明用途+举例，默认全开：
 | 开关 | 默认 | 用途 | 举例 |
 |---|---|---|---|

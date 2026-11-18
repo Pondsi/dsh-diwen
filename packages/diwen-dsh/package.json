@@ -1,6 +1,6 @@
 {
   "name": "diwen-dsh",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "迪文（Diwen）DeepSeek Harness（dsh）Cordis 插件：开源壳，依赖已发布 diwen 核心包。注册 diwen_map/diwen_describe 工具 + 运行时 skill diwen + 确定性强制层（systemPrompt 硬指令 / pre-step 输入投影 / post-execute 结果投影闭环，每 seam 设置开关）。允许商用、不可再分发、须署名 Pondsi。",
   "type": "module",
   "main": "index.js",
@@ -19,7 +19,7 @@
   "dependencies": {
     "@deepseek-ai/schemastery": "^3.19.0",
     "@node-rs/jieba": "^2.0.4",
-    "diwen": "^6.4.0"
+    "diwen": "^6.7.0"
   },
   "peerDependencies": {
     "@deepseek-ai/dsh-llm": "*",
