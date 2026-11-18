@@ -22,7 +22,7 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 | Scenario | What Diwen adds | Measured benefit |
 |---|---|---|
 | **Multi-agent collaboration** | Agents exchange concept coordinates instead of re-describing meanings in ambiguous NL | A concept reference costs **3 tokens (coordinate) vs 13.75 (NL definition) = −78.2%**; by id **1.62 tokens = −88.2%**. Sense alignment: model WSD **0.9923** (qwen4) / **0.9933** (deepseek) concept accuracy |
-| **Sub-agent communication** | Lead ↔ sub-agents exchange tasks/results as deterministic concepts | Same compact reference; rendering **100% deterministic** (3055/3055 round-trip, **0 failures**) → no drift across turns or agents |
+| **Sub-agent communication** | Lead ↔ sub-agents exchange tasks/results as deterministic concepts | Same compact reference; rendering **100% deterministic** (3092/3092 round-trip, **0 failures**) → no drift across turns or agents |
 | **Deterministic knowledge base** | Knowledge anchored to machine-verifiable concepts, not fuzzy text | Canonical concept index: id vs lemma **−12.8%** tokens; coordinate vs definition **−78.2%**; every entry renders identically |
 | **Context summaries / prompts** | Compressed meaning carried as concept coordinates, stable across models | Compact concept references (**−78–88%** vs definitions); stable canonical rendering across turns/models |
 | **Error correction (any NL→Diwen)** | Model WSD picks the right sense; honest abstention otherwise | Polysemous mapped words: mechanical **0.192 → ~0.99** with WSD (**≈+80pp** error correction); verbatim recall **0.9931** / precision **0.9983** → no fabrication |
@@ -32,7 +32,7 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 
 ## Status: Chinese is deliverable
 
-**Current scale**: **3055 concepts** / 194 semantic fields; **42 surfaces / 211 senses** (mapped 102 / verbatim 109 / approximate 0); **1258 gold sentences / 211 senses**; frozen holdout 116; pinyin 3054/3055; **all 3055 concepts reachable** via the Chinese surface pack. Private Diwen extension supported (user concepts, id ≥ 524288).
+**Current scale**: **3092 concepts** / 194 semantic fields; **58 surfaces / 329 senses** (mapped 200 / verbatim 129 / approximate 0); **1495 gold sentences / 329 senses**; frozen holdout 116; pinyin 3091/3092; **all 3092 concepts reachable** via the Chinese surface pack. Private Diwen extension supported (user concepts, id ≥ 699051).
 
 **Concept accuracy — blind WSD evaluation (`semanticApproval=false`)**:
 
@@ -44,9 +44,9 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 | clef (27B local decision) | `--ask --choice` | 0.96 | [0.9155, 0.9815] | 0.45s |
 | clef-flash (9.1B decision) | `--ask --choice` | 0.9467 | [0.8983, 0.9727] | 0.16s |
 | d3:4b (decision) | `--ask --choice` | 0.9267 | [0.8735, 0.9586] | 0.09s |
-| Deterministic mechanical (lower bound) | longest match | 0.5072 | [0.449, 0.5668] cluster | instant |
+| Deterministic mechanical (lower bound) | longest match | 0.4676 | ±5.05pp cluster | instant |
 
-Model rows are measured on the round136 gold polysemy pressure subset (1040 examples, blind, zero leakage); the deterministic row is the current full-gold (1258) mechanical lower bound — **not the production path**.
+Model rows are measured on the round136 gold polysemy pressure subset (1040 examples, blind, zero leakage); the deterministic row is the current full-gold (1495) mechanical lower bound — **not the production path**.
 
 **Production path (enhanced + calibrated; frozen holdout / real domain)**:
 
@@ -149,7 +149,7 @@ LICENSE               license
 If Diwen helps you, consider sponsoring — see [SPONSORS.md](SPONSORS.md). Donations buy no extra features; everything stays free.
 
 ## Limitations
-- Currently only Chinese is deliverable; other languages are on the roadmap (Axiom ⑤: language-independent mapping, no pivot).
+- Currently **Chinese is deliverable — 2 languages: Simplified (zh) + Traditional (zh-TW)**, sharing the same concept coordinates. The other 25 languages are future roadmap (Axiom ⑤: language-independent mapping, no pivot).
 - Coverage is not 100% (by Axiom ④ design); words without a concept are preserved verbatim, never fabricated.
 
 Author: Pondsi · https://github.com/Pondsi/dsh-diwen
