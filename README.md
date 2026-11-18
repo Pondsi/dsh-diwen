@@ -22,7 +22,7 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 | Scenario | What Diwen adds | Measured benefit |
 |---|---|---|
 | **Multi-agent collaboration** | Agents exchange concept coordinates instead of re-describing meanings in ambiguous NL | A concept reference costs **3 tokens (coordinate) vs 13.75 (NL definition) = −78.2%**; by id **1.62 tokens = −88.2%**. Sense alignment: model WSD **0.9923** (qwen4) / **0.9933** (deepseek) concept accuracy |
-| **Sub-agent communication** | Lead ↔ sub-agents exchange tasks/results as deterministic concepts | Same compact reference; rendering **100% deterministic** (3119/3119 round-trip, **0 failures**) → no drift across turns or agents |
+| **Sub-agent communication** | Lead ↔ sub-agents exchange tasks/results as deterministic concepts | Same compact reference; rendering **100% deterministic** (3167/3167 round-trip, **0 failures**) → no drift across turns or agents |
 | **Deterministic knowledge base** | Knowledge anchored to machine-verifiable concepts, not fuzzy text | Canonical concept index: id vs lemma **−12.8%** tokens; coordinate vs definition **−78.2%**; every entry renders identically |
 | **Context summaries / prompts** | Compressed meaning carried as concept coordinates, stable across models | Compact concept references (**−78–88%** vs definitions); stable canonical rendering across turns/models |
 | **Error correction (any NL→Diwen)** | Model WSD picks the right sense; honest abstention otherwise | Polysemous mapped words: mechanical **0.192 → ~0.99** with WSD (**≈+80pp** error correction); verbatim recall **0.9931** / precision **0.9983** → no fabrication |
@@ -32,7 +32,7 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 
 ## Status: Chinese is deliverable
 
-**Current scale**: **3119 concepts** / 194 semantic fields; **74 surfaces / 456 senses** (mapped 291 / verbatim 165 / approximate 0); **1749 gold sentences / 456 senses**; frozen holdout 116; pinyin 3118/3119; **all 3119 concepts reachable** via the Chinese surface pack. Private Diwen extension supported (user concepts, id ≥ 699051).
+**Current scale**: **3167 concepts** / 194 semantic fields; **98 surfaces / 614 senses** (mapped 415 / verbatim 199 / approximate 0); **2065 gold sentences / 614 senses**; frozen holdout 116; pinyin 3166/3167; **all 3167 concepts reachable** via the Chinese surface pack. Private Diwen extension supported (user concepts, id ≥ 699051).
 
 **Concept accuracy — blind WSD evaluation (`semanticApproval=false`)**:
 
@@ -44,9 +44,9 @@ Benefits are **measured**, not advertised: token counts use real `cl100k_base` B
 | clef (27B local decision) | `--ask --choice` | 0.96 | [0.9155, 0.9815] | 0.45s |
 | clef-flash (9.1B decision) | `--ask --choice` | 0.9467 | [0.8983, 0.9727] | 0.16s |
 | d3:4b (decision) | `--ask --choice` | 0.9267 | [0.8735, 0.9586] | 0.09s |
-| Deterministic mechanical (lower bound) | longest match | 0.4362 | ±4.43pp cluster | instant |
+| Deterministic mechanical (lower bound) | longest match | 0.4068 | ±3.86pp cluster | instant |
 
-Model rows are measured on the round136 gold polysemy pressure subset (1040 examples, blind, zero leakage); the deterministic row is the current full-gold (1749) mechanical lower bound — **not the production path**.
+Model rows are measured on the round136 gold polysemy pressure subset (1040 examples, blind, zero leakage); the deterministic row is the current full-gold (2065) mechanical lower bound — **not the production path**.
 
 **Production path (enhanced + calibrated; frozen holdout / real domain)**:
 
@@ -82,7 +82,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
-Published on npm (current **diwen@6.5.0**) — install directly:
+Published on npm (current **diwen@6.6.1**) — install directly:
 ```bash
 npm install diwen
 ```
