@@ -1,6 +1,6 @@
 {
   "name": "dsh-diwen",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "private": true,
   "description": "迪文（Diwen）概念坐标系统 open-core 公开分发：npm 包 / MCP server / dsh 插件。开源壳 + 闭源核心 + 加密数据。",
   "workspaces": ["packages/*"],
