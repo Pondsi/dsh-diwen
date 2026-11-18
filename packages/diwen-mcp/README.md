@@ -7,7 +7,7 @@
 - `diwen_select` —— 批量云端义项选择（C14 云内级联 / C3 多家族加权投票；需云端密钥）
 
 > **许可：允许商用（免费、无需另行授权）、不可再分发、必须署名作者 Pondsi。** 详见 [LICENSE](./LICENSE)。
-> 仓库：https://github.com/Pondsi/Diwen
+> 仓库：https://github.com/Pondsi/dsh-diwen
 
 ---
 
@@ -211,12 +211,12 @@ spawn `server.mjs` 并走完整流程：`initialize` → `notifications/initiali
 
 1. **允许商用**：个人与商业目的免费使用、集成，**无需事先取得作者授权**；可集成进你自己的程序（组件/依赖/插件/**MCP 服务**）并销售你的程序。
 2. **不可再分发**：不得将本项目（源码、闭源核心、加密数据，整体或实质性部分）单独或随你的程序再分发、转售、公开镜像或上传他库；你的程序只能以「依赖/引用」形式包含它，且接收者不得能提取为独立项目。**不得解密、提取、绕过或再分发闭源核心与数据。**
-3. **必须署名**：在你的程序文档/关于页/随附说明中注明使用了 **Diwen / 迪文**、作者 **Pondsi**、仓库链接 **https://github.com/Pondsi/Diwen** 。
+3. **必须署名**：在你的程序文档/关于页/随附说明中注明使用了 **Diwen / 迪文**、作者 **Pondsi**、仓库链接 **https://github.com/Pondsi/dsh-diwen** 。
 
 其余权利保留；按「现状」提供，无任何担保。违反条款（尤其再分发与署名义务）将自动终止已授予的权利。
 
 署名示例（可直接复制到你的 README / 关于页）：
 
 ```text
-This product uses Diwen (迪文) by Pondsi — https://github.com/Pondsi/Diwen
+This product uses Diwen (迪文) by Pondsi — https://github.com/Pondsi/dsh-diwen
 ```

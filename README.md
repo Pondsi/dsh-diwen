@@ -25,9 +25,11 @@ The Chinese part is **deliverable and usable**:
 | Local decision d3:4b (enhanced + calibrated) | 0.9636 → curated 0.9828 |
 | Local chat qwen3:8b (enhanced) | 0.9727 |
 | Cross-family ensemble | 0.9636 |
-| Deterministic mechanical (lower bound, not the production path) | 0.5173 |
+| Deterministic mechanical (lower bound, not the production path) | 0.5072 (full-gold recompute, round175) |
 
-Coverage expansion (13 senses + 4 new concepts: convene 3047 / severe 3048 / firm 3049 / issue_document 3050) is verified on three paths: cloud cascade 5/5, local decision d3:4b 8/8 (confidence 94–99%), and local chat qwen3:8b. The curated holdout re-test after expansion is 0.9828 (114/116, round163), a slight improvement over 0.9818 with no regression.
+Current scale: **3055 concepts** (194 semantic fields), **42 surfaces / 211 senses** in the candidate index, **1258 gold sentences / 211 senses**, frozen holdout 116. All 3055 concepts are reachable via the Chinese surface pack. Model accuracies above are measured on frozen holdout / historical pressure subsets; the deterministic row is the current full-gold mechanical lower bound.
+
+Coverage expansion (13 senses + 4 new concepts: convene 3047 / severe 3048 / firm 3049 / issue_document 3050, then T2 concepts 3051–3055) is verified on three paths: cloud cascade 5/5, local decision d3:4b 8/8 (confidence 94–99%), and local chat qwen3:8b. The curated holdout re-test after expansion is 0.9828 (114/116, round163), a slight improvement over 0.9818 with no regression.
 
 Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semanticApproval=false` always holds: passing mechanical validation ≠ semantically correct ≠ human-approved. When no concept exists, the original text is preserved verbatim (Axiom ④) — nothing is fabricated.
 
@@ -49,7 +51,7 @@ Axiom ① (Diwen → unique Chinese definition) is 100% deterministic. `semantic
 This repo is Diwen's **open-core public distribution**: open loader shell + closed core (minified bundle) + encrypted concept data (AES-256-GCM). Clone, then `npm install` to use offline.
 
 ### npm package
-Published on npm (current **diwen@6.3.0**) — install directly:
+Published on npm (current **diwen@6.3.3**) — install directly:
 ```bash
 npm install diwen
 ```

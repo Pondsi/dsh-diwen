@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // 迪文（Diwen）MCP server —— 开源 stdio 壳（open-core）。
 // 本文件开源；核心与概念数据闭源，由 ../diwen（dist/core.mjs + dist/data.enc + env.cjs 解密壳）提供。
-// 许可：允许商用（无需另行授权）、不可再分发、必须署名作者 Pondsi。见 LICENSE / https://github.com/Pondsi/Diwen
+// 许可：允许商用（无需另行授权）、不可再分发、必须署名作者 Pondsi。见 LICENSE / https://github.com/Pondsi/dsh-diwen
 //
 // 传输：stdio，逐行（newline-delimited）JSON-RPC 2.0，MCP protocol version 2024-11-05。
 // 纪律：stdout 只写 JSON-RPC 响应；一切日志走 stderr（console.error）。

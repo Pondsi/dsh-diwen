@@ -42,4 +42,4 @@ description: 迪文（Diwen）概念坐标系统使用指引：何时用 diwen_m
 
 ## 许可与署名
 
-迪文作者 Pondsi（https://github.com/Pondsi/Diwen）：允许商用、不可再分发、必须署名。集成进程序时须在文档/关于页注明使用「Diwen / 迪文」、作者 Pondsi，并附仓库链接。
+迪文作者 Pondsi（https://github.com/Pondsi/dsh-diwen）：允许商用、不可再分发、必须署名。集成进程序时须在文档/关于页注明使用「Diwen / 迪文」、作者 Pondsi，并附仓库链接。

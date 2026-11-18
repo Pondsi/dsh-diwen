@@ -57,9 +57,9 @@ dsh 是 Cordis"一切皆插件"，无特权内核；瀑布事件（waterfall，�
 
 **验证**：selftest 全过（工具/skill/强制层 seam/投影/source.kind）；DeepSeek Harness headless + deepseek-v4-pro 真机：模型自主调 diwen_map('我吃饭')→我1363/吃饭verbatim，强制层注入无错误。
 
-**npm 发布**：diwen@6.3.0（核心）/ diwen-mcp@6.3.0 / diwen-dsh@0.3.0（含强制层+设置开关）。更新：`dsh plugin --profile <p> update diwen-dsh`。
+**npm 发布**：三包版本以 [PACKAGE-USAGE.md「当前发布版本（单一真相）」表](PACKAGE-USAGE.md#当前发布版本单一真相) 为准（diwen 核心 / diwen-mcp / diwen-dsh，含强制层+设置开关）。更新：`dsh plugin --profile <p> update diwen-dsh`。
 
-> 能力边界：dsh 侧当前注册 **2** 工具（diwen_map/diwen_describe）+ skill；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp@6.3.0，3 工具）或直接调用核心 `cascadeSelect`/`ensembleSelect`，不在 dsh 工具集内。
+> 能力边界：dsh 侧当前注册 **2** 工具（diwen_map/diwen_describe）+ skill；云端级联/集成选义（C14/C3）经 MCP `diwen_select`（diwen-mcp，3 工具）或直接调用核心 `cascadeSelect`/`ensembleSelect`，不在 dsh 工具集内。
 
 ### 设置开关（diwen-dsh@0.3.0，dsh 设置 UI 可见）
 `export const Config = z.object({...})`（@deepseek-ai/schemastery），`apply(ctx, config={})` 读开关，每项 `.description()` 说明用途+举例，默认全开：

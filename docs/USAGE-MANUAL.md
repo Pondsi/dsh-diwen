@@ -31,7 +31,7 @@
 
 - **使用与商用：免费、无需另行授权**；可集成进你自己的程序并销售你的程序。
 - **不可再分发**：不得把迪文本身（源码/闭源核心/加密数据）单独或随程序再分发/镜像/上传他库。
-- **署名**：注明使用迪文（Diwen/迪文）+ 作者 **Pondsi** + 仓库链接 https://github.com/Pondsi/Diwen （LICENSE 三(c) 指定）。
+- **署名**：注明使用迪文（Diwen/迪文）+ 作者 **Pondsi** + 仓库链接 https://github.com/Pondsi/dsh-diwen （LICENSE 三(c) 指定）。
 - 完整条款见仓库 LICENSE。
 
 ## 五、限制
