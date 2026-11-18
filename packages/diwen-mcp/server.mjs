@@ -72,6 +72,37 @@ const TOOLS = [
       additionalProperties: false,
     },
   },
+  {
+    name: 'diwen_select',
+    description:
+      '批量云端义项选择（高级 WSD）。对多个 {id,surface,sentence} 用例用云端模型选义：' +
+      "mode='cascade'（C14 云内级联：小云易例/大云难例，省成本）或 'ensemble'（C3 多家族加权投票，去单模型偏差）。" +
+      '需云端密钥（环境变量 DIWEN_KEYS_FILE 指向密钥文件，或 DIWEN_CLOUD_BASE 覆盖 base）；无密钥时 isError:true 并提示。' +
+      '返回 {predictions{id→{conceptId,verbatim,sense_key}}, models, semanticApproval:false}。公理④无概念→verbatim。仅中文。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        cases: {
+          type: 'array',
+          description: '选义用例数组，每项 {id, surface, sentence}。',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              surface: { type: 'string', description: '目标词（中文）。' },
+              sentence: { type: 'string', description: '含目标词的中文句子。' },
+            },
+            required: ['id', 'surface', 'sentence'],
+            additionalProperties: false,
+          },
+        },
+        mode: { type: 'string', enum: ['cascade', 'ensemble'], description: "默认 'cascade'。" },
+        weights: { type: 'object', description: "ensemble 模式按模型赋权（如 {'deepseek-v4-pro':2}），默认等权。" },
+      },
+      required: ['cases'],
+      additionalProperties: false,
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -142,6 +173,32 @@ function callDescribe(args) {
   }
 }
 
+async function callSelect(args) {
+  const cases = args.cases;
+  if (!Array.isArray(cases) || cases.length === 0) {
+    return toolResult('diwen_select: 参数 cases 必须是非空数组 [{id,surface,sentence}]。', true);
+  }
+  for (const c of cases) {
+    if (!c || typeof c.id !== 'string' || typeof c.surface !== 'string' || typeof c.sentence !== 'string') {
+      return toolResult('diwen_select: 每个 case 须含字符串 id/surface/sentence。', true);
+    }
+  }
+  const mode = args.mode ?? 'cascade';
+  if (mode !== 'cascade' && mode !== 'ensemble') {
+    return toolResult("diwen_select: mode 必须是 'cascade' | 'ensemble'。", true);
+  }
+  try {
+    const candidates = diwen.loadCandidates();
+    const r = mode === 'cascade'
+      ? await diwen.cascadeSelect(cases, candidates)
+      : await diwen.ensembleSelect(cases, candidates, args.weights ? { weights: args.weights } : {});
+    return toolResult({ predictions: r.predictions, models: r.models, escalated: r.escalated, semanticApproval: false });
+  } catch (err) {
+    console.error('[diwen-mcp] diwen_select error:', errText(err));
+    return toolResult(`diwen_select 执行失败（多为云端密钥缺失：设 DIWEN_KEYS_FILE 指向密钥文件）: ${errText(err)}`, true);
+  }
+}
+
 async function callTool(params) {
   const name = params.name;
   const args = params.arguments;
@@ -151,7 +208,8 @@ async function callTool(params) {
   const a = args ?? {};
   if (name === 'diwen_map') return callMap(a);
   if (name === 'diwen_describe') return callDescribe(a);
-  return toolResult(`未知工具: ${String(name)}（可用: diwen_map, diwen_describe）`, true);
+  if (name === 'diwen_select') return callSelect(a);
+  return toolResult(`未知工具: ${String(name)}（可用: diwen_map, diwen_describe, diwen_select）`, true);
 }
 
 // ---------------------------------------------------------------------------
@@ -229,4 +287,4 @@ for (const sig of ['SIGINT', 'SIGTERM']) {
   process.on(sig, () => process.exit(0));
 }
 
-console.error(`[diwen-mcp] ${SERVER_NAME} v${SERVER_VERSION} ready (stdio, MCP ${PROTOCOL_VERSION}); tools: diwen_map, diwen_describe`);
+console.error(`[diwen-mcp] ${SERVER_NAME} v${SERVER_VERSION} ready (stdio, MCP ${PROTOCOL_VERSION}); tools: diwen_map, diwen_describe, diwen_select`);

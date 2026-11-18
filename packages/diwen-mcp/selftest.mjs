@@ -140,15 +140,19 @@ async function main() {
   const tools = list.result?.tools ?? [];
   show('tools', tools.map((t) => t.name));
   assert('tools/list 无错误', !list.error);
-  assert('恰好两个工具', tools.length === 2, `count=${tools.length}`);
+  assert('恰好三个工具', tools.length === 3, `count=${tools.length}`);
   const map = tools.find((t) => t.name === 'diwen_map');
   const desc = tools.find((t) => t.name === 'diwen_describe');
+  const sel = tools.find((t) => t.name === 'diwen_select');
   assert('diwen_map 存在且含 inputSchema', !!map && map.inputSchema?.type === 'object');
   assert('diwen_map.required = [text]', JSON.stringify(map?.inputSchema?.required) === '["text"]');
   assert('diwen_map 声明 model/enhance', !!map?.inputSchema?.properties?.model && !!map?.inputSchema?.properties?.enhance);
   assert('diwen_map.model enum 四值', JSON.stringify(map?.inputSchema?.properties?.model?.enum) === JSON.stringify(['auto', 'deterministic', 'decision', 'off']));
   assert('diwen_describe 存在且含 inputSchema', !!desc && desc.inputSchema?.type === 'object');
   assert('diwen_describe.required = [id]', JSON.stringify(desc?.inputSchema?.required) === '["id"]');
+  assert('diwen_select 存在且含 inputSchema', !!sel && sel.inputSchema?.type === 'object');
+  assert('diwen_select.required = [cases]', JSON.stringify(sel?.inputSchema?.required) === '["cases"]');
+  assert('diwen_select.mode enum cascade/ensemble', JSON.stringify(sel?.inputSchema?.properties?.mode?.enum) === JSON.stringify(['cascade', 'ensemble']));
   assert('通知未产生响应', stray.length === 0, `stray=${JSON.stringify(stray)}`);
 
   // --- 4. tools/call diwen_map --------------------------------------------

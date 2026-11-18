@@ -1,14 +1,14 @@
 {
   "name": "diwen-mcp",
-  "version": "6.2.0",
-  "description": "迪文（Diwen）MCP server：开源零依赖 stdio 壳，暴露 diwen_map / diwen_describe，依赖已发布的 diwen 核心包（闭源核心+加密概念数据）。允许商用、不可再分发、须署名 Pondsi。",
+  "version": "6.3.0",
+  "description": "迪文（Diwen）MCP server：开源零依赖 stdio 壳，暴露 diwen_map / diwen_describe / diwen_select（云端级联/集成选义），依赖已发布的 diwen 核心包（闭源核心+加密概念数据）。允许商用、不可再分发、须署名 Pondsi。",
   "type": "module",
   "main": "server.mjs",
   "bin": {
     "diwen-mcp": "server.mjs"
   },
   "dependencies": {
-    "diwen": "^6.2.1"
+    "diwen": "^6.3.0"
   },
   "files": [
     "server.mjs",
