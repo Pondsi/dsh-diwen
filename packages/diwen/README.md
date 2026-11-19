@@ -1,6 +1,6 @@
 # diwen（npm 包）
 
-迪文概念坐标系统 open-core npm 包：**开源加载壳**（`index.mjs`/`env.cjs`）+ **闭源核心**（`dist/core.mjs`，minify bundle）+ **加密概念数据**（`dist/data.enc`，AES-256-GCM）。当前版本 **6.8.0**。
+迪文概念坐标系统 open-core npm 包：**开源加载壳**（`index.mjs`/`env.cjs`）+ **闭源核心**（`dist/core.mjs`，minify bundle）+ **加密概念数据**（`dist/data.enc`，AES-256-GCM）。当前版本 **6.9.0**。
 
 ## 安装与使用
 ```bash

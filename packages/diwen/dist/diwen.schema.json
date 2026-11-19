@@ -147,12 +147,12 @@
             ]
           },
           "s3a": {
-            "type": "integer",
+            "type": ["integer", "null"],
             "minimum": 0,
-            "maximum": 59
+            "maximum": 127
           },
           "s3b": {
-            "type": "integer",
+            "type": ["integer", "null"],
             "minimum": 0,
             "maximum": 24
           },

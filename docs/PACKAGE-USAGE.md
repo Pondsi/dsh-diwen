@@ -7,7 +7,7 @@
 
 | 包 | 版本 | 说明 |
 |---|---|---|
-| diwen | **6.8.0** | 核心：开源加载壳 + 闭源核心 + 加密概念数据 + 私有迪文扩展 |
+| diwen | **6.9.0** | 核心：开源加载壳 + 闭源核心 + 加密概念数据 + 私有迪文扩展 |
 | diwen-mcp | **6.3.2** | MCP server（3 工具），依赖 npm diwen ^6.7.0 |
 | diwen-dsh | **0.3.2** | dsh 插件（强制层 + 设置开关），依赖 npm diwen ^6.7.0 |
 
@@ -84,47 +84,56 @@ dsh plugin --profile <p> add diwen-dsh        # 从 npm（自动拉取 diwen 核
 - 阈值按域校准（data/wsd-thresholds.json：curated t40 / real t50）。
 - **决策模型选项容量（提示+错误反馈，不禁止模型）**：选项上限按模型各异（硬上限实测 255；有效判别上限 tev1=32/d3=128/clef-flash=255/clef=128；当前候选库存单面最大 12 义（老）+__none__=13，远小于上限）。**由使用者自判选用**；`checkModelCapacity` 给建议性提示，`decisionSelect` 出错时 `classifyModelError` 反馈「模型能力问题（如选项超上限），请换模型/减少候选」。
 
-## 5. 私有迪文（用户自定义概念扩展）
+## 5. 私有迪文包（用户自定义概念扩展）
 
-迪文允许使用者**自行增加私有概念**（私有迪文），无需改动公开核心，即可让迪文承载你自己的领域术语/专有概念。私有概念与基础概念（3055 条）在同一词库合并，**全链路可用**（map 匹配 / 模型 WSD 选义 / describe 释义 / render 渲染）。
+迪文允许使用者**自行增加私有概念**（私有迪文包），无需改动公开核心，即可承载你自己的领域术语/专有概念。私有概念与基础概念（3317 条）合并，**全链路可用**（map 匹配 / 模型 WSD 选义 / describe 释义）。完整规范见 `docs/PRIVATE-PACKAGE-SPEC.md`。
 
-**分区与隔离**
-- 概念 ID 分区：基础概念 id ∈ [1, 524287]；**私有概念 id 须 ≥ 524288**（`PRIVATE_ID_MIN`，上半区约 52 万槽位）。加载期校验 id 分区，杜绝与基础概念冲突。
-- 字形坐标 (s3a,s3b) 须避开基础概念已占用的组合（加载期碰撞检测）；用 `diwen private free-coords` 查空闲坐标。
-- 私有数据是**使用者自己的文件**（明文 JSON，不入库、不加密、不再分发）；不需要也不允许解密公开核心。符合许可（你扩展自己的私有数据，非再分发迪文本身）。
+**分区与字形**
+- 概念 ID 分区：基础 id ∈ [0, 699051)；**私有 id 须 ∈ [699051, 1048576)**（`PRIVATE_ID_MIN=699051`，约 35 万槽位）。越界=非法包，整包拒绝。
+- **字形非必须**：私有概念**无字形坐标**（s3a/s3b=null），共用默认字形。只有基础包 3200 个人类可读概念有独立字形（视觉带已填满）。机器通讯靠 id/根码，自然语渲染（lemma_zh）唯一确定（公理①）。
+- 私有数据是**使用者自己的文件**（不入库、不加密、不再分发）；符合许可（扩展自己的私有数据，非再分发迪文本身）。
 
-**增加私有概念（CLI，四步）**
+**冲突裁决（基础不可变）**
+| 冲突 | 与基础包 | 私有包之间 |
+|---|---|---|
+| id 越界 | 整包拒绝 | — |
+| id 碰撞 | 不可能（分区隔离）| 自动分配空闲私有 id + 同步引用 |
+| lemma_zh / lemma_en 同名 | 整包拒绝 | 允许共存（同形多义）|
+| 义项键 (surface,sense_key) | 整包拒绝（不污染基础）| 新包覆盖旧包 |
+| 概念重合（方案B：lemma_zh+field+bfo+nsm+place 全同）| 去重 | 去重；仅同名不同义→共存 |
+
+**私有包 CLI（导出/导入/卸载）**
 ```bash
-diwen private template -o my-private.json    # 1. 生成模板（含示例概念 + 空闲坐标）
-# 2. 编辑 my-private.json：id≥524288、lemma_zh（自然中文词形）、field、bfo_type、place、nsm、pinyin
-diwen private free-coords 20                 # 查空闲 (s3a,s3b) 供挑选
-diwen private validate my-private.json       # 3. 校验（id 分区/坐标碰撞/schema）
-export DIWEN_PRIVATE_LEXICON=my-private.json  # 4. 设环境变量，加载私有概念
-diwen private list                           # 查看已加载私有概念
+diwen private export -o my.diwenpkg --namespace you.domain --name mypkg --candidates --enhance  # 导出当前私有概念为包
+diwen private validate my.diwenpkg                 # 校验（结构/语义/基础兼容/碰撞/引用/公理）
+diwen private import my.diwenpkg                   # 导入（撞基础整包拒；私有间冲突自动裁决）
+diwen private list                                 # 列出已装私有包
+diwen private uninstall you.domain --backup        # 卸载（基础零丢失，冲突自动重裁决还原）
 ```
+- 存储（方案B）：`~/.diwen/private/<namespace>/`（pristine 原样存储 + order.json 导入序），`DIWEN_PRIVATE_DIR` 可覆盖。
+- **完美卸载**：卸载任意包不影响其余包；先前冲突裁决（覆盖/id 重映射）**自动重新调整到当前正确态**（pristine 存储 + 纯函数合并重算，无需记历史）。基础词库哈希全程不变。
+- 兼容旧单文件：`DIWEN_PRIVATE_LEXICON`（概念）/ `DIWEN_PRIVATE_CANDIDATES`（候选）仍可用。
 
-**使用（设 DIWEN_PRIVATE_LEXICON 后自动生效）**
+**使用（导入后自动生效）**
 ```bash
 diwen map "……你的私有词……" --model deterministic   # 私有词形被匹配
-diwen concept 524288                                  # 私有概念 → 中文释义
+diwen concept 699051                                  # 私有概念 → 中文释义
 ```
 ```js
-import { mapChinese, describeConcept, loadLexicon } from 'diwen';
-const lex = loadLexicon();                 // 自动合并 DIWEN_PRIVATE_LEXICON 指向的私有概念
+import { mapChinese, describeConcept, loadLexicon, importPrivatePackage, uninstallPrivatePackage, computeMergedPrivate } from 'diwen';
+const lex = loadLexicon();                 // 自动合并私有包目录 + 旧单文件
 const r = await mapChinese('含私有词的句子', { model: 'auto' });
-console.log(describeConcept(524288).lemma_zh);
+console.log(describeConcept(699051).lemma_zh);
 ```
 
-**私有候选义项（模型 WSD 选义，可选）**
-私有概念若需多义消歧，设 `DIWEN_PRIVATE_CANDIDATES` 指向私有候选 JSON（结构同 zh-sense-candidates.json：`{entries:[{surface,senses:[{sense_key,concept,definitionZh,example,verbatim}]}]}`）。`loadCandidates()` 按 surface 合并私有义项（标 private:true），模型即可在私有义项上选义。
-
-**程序化 API（代码级控制）**
-- `loadLexicon(path?, { privatePath, noCache })`：显式指定私有文件（覆盖环境变量）。
-- `validatePrivateRoots(roots, baseRoots)` / `loadPrivateRoots(path, baseRoots)`：校验/加载。
-- `freeCoordinates(baseRoots, count)` / `privateTemplate(baseRoots)`：空闲坐标/模板。
-- `mergeLexicon(baseLex, pack)` / `validateNamespacePack(pack, baseLex)`：扩展包合并（命名空间机制）。
+**程序化 API**
+- `exportPrivatePackage(lex, opts)` / `writePrivatePackage(path, pkg, {zip})` / `readPrivatePackage(path)`：导出/写/读包。
+- `validatePrivatePackage(pkg, baseRoots, installed?)`：多层校验。
+- `importPrivatePackage(pkg, baseRoots, installed?, opts?)` / `uninstallPrivatePackage(ns, opts?)` / `listPrivatePackages(dir?)`：导入/卸载/列出。
+- `computeMergedPrivate(baseRoots, orderedPackages, baseCtx?)`：**纯函数**合并重算（确定性，卸载还原的核心）。
+- `loadLexicon(path?, { privatePath, privateDir, noCache })`：`privateDir:null` 取纯基础（不含私有）。
 
 **注意**
-- 私有文件修改后需**重启进程**（词库进程级缓存）；或 `loadLexicon(undefined,{noCache:true})` 强制重读。
-- `lemma_zh` 宜为自然中文词形（与基础概念一致），分词边界过滤对私有/基础词同等生效。
-- 私有概念 `semanticApproval` 同样恒 false；无对应概念仍走 verbatim（公理④）。
+- 私有包导入/卸载后词库自动重算（缓存键含包序）；或 `loadLexicon(undefined,{noCache:true})` 强制重读。
+- `lemma_zh` 须自然中文词形（禁下划线）；pinyin 逐字带调（音节数=字数）；definitionZh 必需（公理④不伪造）。
+- 私有概念 `semanticApproval` 恒 false；无对应概念仍走 verbatim（公理④）。
