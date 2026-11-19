@@ -4,7 +4,7 @@
 
 ## 一、获取与安装
 
-本仓库为 open-core 公开分发（开源壳 + 闭源核心 + 加密数据），clone 后离线即用。当前发布：**diwen@6.7.1 / diwen-mcp@6.3.2 / diwen-dsh@0.3.2**。
+本仓库为 open-core 公开分发（开源壳 + 闭源核心 + 加密数据），clone 后离线即用。当前发布：**diwen@6.8.0 / diwen-mcp@6.3.2 / diwen-dsh@0.3.2**。
 
 - **npm 包**（已发布）：`npm install diwen`（自动安装中文分词依赖），然后 `import { mapChinese, describeConcept } from 'diwen'`；或从本仓库进入 `packages/diwen` 运行 `npm install` 后使用。
 - **MCP server**（已发布）：`npm install diwen-mcp`，然后 `npx diwen-mcp`（或 `node packages/diwen-mcp/server.mjs`），在你的 MCP 客户端里配置该命令即可。**3 工具**：`diwen_map` / `diwen_describe` / `diwen_select`（云端级联/集成选义，需环境变量 `DIWEN_KEYS_FILE` 密钥）。
