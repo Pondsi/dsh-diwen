@@ -194,6 +194,11 @@
               "?"
             ]
           },
+          "degree": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "maximum": 1
+          },
           "confidence": {
             "type": "object",
             "additionalProperties": false,
