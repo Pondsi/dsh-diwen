@@ -1,8 +1,8 @@
 // 迪文 open-core 环境壳（开源）：解密 data.enc→临时目录→设 DIWEN_DATA_DIR。核心(core.mjs)与数据闭源。
 // 许可：允许商用、可再分发、必须署名作者 Pondsi（见 LICENSE）。
 const fs = require('fs'), os = require('os'), path = require('path'), crypto = require('crypto'), zlib = require('zlib');
-const MASK = Buffer.from('OfjwwmK7oqYSK5QjNmCtVdW5iLi9lPK9kyyH2IOsI+g=', 'base64');
-const MASKED = Buffer.from('3ywVnGzWvF2wVNSU8RXIgQr/QNyEUpLX+9gpKURYL5o=', 'base64');
+const MASK = Buffer.from('MxB3yrq28pMPPfD4eA27t0oThU1MFHamAdPquPHB4ek=', 'base64');
+const MASKED = Buffer.from('uS3r6RgMpKPT7/T+L+3g7kGlpLEu/JJopy7Lp7mGdu0=', 'base64');
 const key = Buffer.from(MASKED.map((b, i) => b ^ MASK[i]));
 const enc = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(__dirname, 'dist', 'data.enc'))).toString('utf8'));
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'diwen-data-'));
