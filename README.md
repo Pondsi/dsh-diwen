@@ -15,7 +15,7 @@ dsh plugin add git+https://github.com/Pondsi/dsh-diwen.git
 dsh plugin add ./dsh-diwen
 ```
 
-依赖 `diwen@^6.16.4`（开源版，数据开放、无需许可）。
+依赖 `diwen@^6.16`（开源版，数据开放、无需许可）。
 
 ## 提供什么
 
