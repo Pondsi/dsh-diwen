@@ -1,0 +1,5 @@
+# 迪文 dsh 组合包 patch：插入 diwen 插件行。
+# name 按包名引用本包（diwen-dsh），由 Node 模块解析定位已安装代码。
+- insert:
+    - id: diwen
+      name: diwen-dsh

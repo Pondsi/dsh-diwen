@@ -1,0 +1,39 @@
+Diwen（迪文）自定义许可协议
+Custom Source-Available License (Commercial-Permitted, No-Redistribution, Attribution)
+Copyright (c) 2026 Pondsi（作者）
+
+本软件及 accompanying 文档（统称「本项目」）按以下条款提供。使用、集成或商用本项目即表示接受本条款。
+
+一、使用与商用（免费、无需另行授权）
+1. 任何个人或**商业目的**均可免费使用、集成本项目，**无需事先取得作者授权**。
+2. 你可以将本项目**集成在你自己的程序中**（作为组件/依赖/内嵌模块/插件/MCP 服务），并销售你的程序。
+
+二、不可再分发
+1. 你不得将本项目本身（源码、闭源核心、加密数据、整体或实质性部分）单独或随你的程序一并再分发、转售、公开镜像或上传至其他仓库/市场。
+2. 你的程序可以分发，但其中包含的本项目部分须以「依赖/引用」形式存在，且不得使接收者能直接提取本项目（含闭源核心与数据）作为独立项目。
+3. 本项目以 **open-core** 形式分发：开源加载壳 + 闭源核心 + 加密概念数据。你不得试图解密、提取、绕过或再分发闭源核心与数据。
+
+三、署名义务（必须）
+凡使用/集成本项目，须在你的程序文档、关于页或随附说明中：
+   (a) 注明使用了本项目（Diwen / 迪文）；
+   (b) 写明本项目作者：**Pondsi**；
+   (c) 附本项目仓库链接 https://github.com/Pondsi/dsh-diwen 。
+
+四、保留权利
+除本条款明确授予的权利外，其余一切权利（包括但不限于再分发权、修改后再分发权、闭源核心与数据的提取权）均保留给作者。
+
+五、无担保
+本项目按「现状」提供，不附带任何明示或暗示的担保（包括适销性、特定用途适用性、不侵权）。作者不对因使用本项目产生的任何索赔、损害或责任负责。
+
+六、终止
+违反本条款（尤其再分发限制与署名义务）将自动终止你已获授予的权利。
+
+---
+
+English summary (non-binding; Chinese text above governs):
+- Use & commercial use: FREE, no prior authorization required. You may integrate Diwen into your own programs (component/dependency/plugin/MCP service) and sell your programs.
+- No redistribution of the project itself (source, closed core, encrypted data). Your programs may be distributed only with Diwen as a dependency/reference that cannot be extracted as a standalone project. Open-core: you may not decrypt/extract/redistribute the closed core & data.
+- Attribution REQUIRED: credit "Diwen / 迪文", name the author "Pondsi", link https://github.com/Pondsi/dsh-diwen .
+- All other rights reserved. Provided "AS IS", without warranty.
+
+Contact: via https://github.com/Pondsi/dsh-diwen (issues).

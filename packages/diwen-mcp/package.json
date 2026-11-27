@@ -1,0 +1,41 @@
+{
+  "name": "diwen-mcp",
+  "version": "6.3.2",
+  "description": "迪文（Diwen）MCP server：开源 stdio 壳（零第三方协议依赖，手写 JSON-RPC，不依赖 MCP SDK），暴露 diwen_map / diwen_describe / diwen_select（云端级联/集成选义），核心依赖已发布的 npm diwen 包（闭源核心+加密概念数据）。允许商用、不可再分发、须署名 Pondsi。",
+  "type": "module",
+  "main": "server.mjs",
+  "bin": {
+    "diwen-mcp": "server.mjs"
+  },
+  "dependencies": {
+    "diwen": "^6.7.0"
+  },
+  "files": [
+    "server.mjs",
+    "selftest.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node server.mjs",
+    "selftest": "node selftest.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "diwen",
+    "mcp",
+    "model-context-protocol",
+    "stdio",
+    "knowledge-representation",
+    "chinese"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pondsi/dsh-diwen.git",
+    "directory": "packages/diwen-mcp"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Pondsi"
+}

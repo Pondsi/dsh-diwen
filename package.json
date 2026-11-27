@@ -1,0 +1,53 @@
+{
+  "name": "diwen-dsh",
+  "version": "0.4.3",
+  "description": "迪文（Diwen）DeepSeek Harness（dsh）插件：模型自判 + AI↔AI 通讯强制迪文概念坐标（本体↔子代理/多 agent/机械化批处理）。",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md",
+    "SPONSORS.md",
+    "docs"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.19.0",
+    "@node-rs/jieba": "^2.0.4",
+    "diwen": "^6.16.2"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-tools": "*"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "diwen",
+    "diwen-dsh",
+    "concept-coordinates",
+    "multi-agent",
+    "machine-communication",
+    "cc-by"
+  ],
+  "license": "CC-BY-4.0",
+  "author": "Pondsi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pondsi/dsh-diwen.git"
+  },
+  "homepage": "https://github.com/Pondsi/dsh-diwen#readme",
+  "bugs": {
+    "url": "https://github.com/Pondsi/dsh-diwen/issues"
+  }
+}
