@@ -15,7 +15,7 @@ dsh plugin add git+https://github.com/Pondsi/dsh-diwen.git
 dsh plugin add ./dsh-diwen
 ```
 
-ä¾èµ– `diwen@^6.16.2`ï¼ˆå¼€æºç‰ˆï¼Œæ•°æ®å¼€æ”¾ã€æ— éœ€è®¸å¯ï¼‰ã€‚
+ä¾èµ– `diwen@^6.16.4`ï¼ˆå¼€æºç‰ˆï¼Œæ•°æ®å¼€æ”¾ã€æ— éœ€è®¸å¯ï¼‰ã€‚
 
 ## æä¾›ä»€ä¹ˆ
 
@@ -65,9 +65,9 @@ node selftest.mjs        # éœ€è¦å·²å®‰è£… dsh peerï¼ˆ@deepseek-ai/dsh-tools / d
 
 ---
 
-## Ğí¿ÉÓëÖ§³Ö ¡¤ License & Support
+## è®¸å¯ä¸æ”¯æŒ ï½œ License & Support
 
-- **Ğí¿É**£º[CC BY 4.0](./LICENSE) ¡ª¡ª ÊğÃû¼´ÓÃ£º¿ÉÓÃÉÌÓÃ¡¢ĞŞ¸Ä¡¢±ÕÔ´¡¢ÔÙ·Ö·¢¡¢ÒıÓÃÆ¬¶Î£¬Î¨Ò»ÒªÇóÊÇÊğÃû **Pondsi**£¨Ïê¼û [NOTICE.md](./NOTICE.md)£©
-- **ÔŞÖú**£º[SPONSORS.md](./SPONSORS.md) £ü GitHub Sponsors <https://github.com/sponsors/Pondsi>
-- **ÎÊÌâ·´À¡**£º[Issues](https://github.com/Pondsi/dsh-diwen/issues)
-- **ÓÃ»§²Ö£¨ºËĞÄ´úÂë/ËµÃ÷£©**£º<https://github.com/Pondsi/Diwen>
+- **è®¸å¯**ï¼š[CC BY 4.0](./LICENSE) â€”â€” å…è®¸å•†ç”¨ã€é—­æºã€ä¿®æ”¹ã€å†åˆ†å‘ã€å¼•ç”¨ç‰‡æ®µï¼Œå”¯ä¸€è¦æ±‚æ˜¯ç½²å **Pondsi**ï¼Œè¯¦è§ [NOTICE.md](./NOTICE.md)ã€‚
+- **èµåŠ©**ï¼š[SPONSORS.md](./SPONSORS.md) â†’ GitHub Sponsors <https://github.com/sponsors/Pondsi>
+- **é—®é¢˜åé¦ˆ**ï¼š[Issues](https://github.com/Pondsi/dsh-diwen/issues)
+- **ç”¨æˆ·ä»“ï¼ˆä¸­æ–‡ä»£ç /è¯´æ˜ï¼‰**ï¼š<https://github.com/Pondsi/Diwen>
