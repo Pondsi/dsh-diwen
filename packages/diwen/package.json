@@ -1,6 +1,6 @@
 {
   "name": "diwen",
-  "version": "6.17.0",
+  "version": "6.17.1",
   "description": "迪文（Diwen）概念坐标系统 open-core 包：开源加载壳 + 闭源核心 + 加密概念数据。允许商用、可再分发、须署名 Pondsi。",
   "type": "module",
   "main": "index.mjs",
